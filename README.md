@@ -1,5 +1,6 @@
 # Sistema de Moeda Estudantil
 [Documento de Laboratório - Release 1](docs/doc-release1.pdf)
+
 Pretende-se desenvolver um sistema para estimular o reconhecimento do mérito
 estudantil através de uma moeda virtual. Essa moeda pode ser distribuída por
 professores aos seus alunos e trocada pelos alunos por produtos e descontos em
