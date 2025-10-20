@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 header {
     background-color: #282c34;
     min-height: 1vh;

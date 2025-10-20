@@ -18,7 +18,7 @@ public class listaController {
             Connection conn = MainDB.connect();
             if (conn == null) return Collections.emptyList();
 
-            List<Map<String,Object>> results = MainDB.query(conn, "SELECT id FROM teste;");
+            List<Map<String,Object>> results = MainDB.query(conn, "SELECT id FROM aluno;");
             List<Long> ids = new ArrayList<>();
             for (Map<String,Object> row : results) {
                 Object v = row.get("id");
