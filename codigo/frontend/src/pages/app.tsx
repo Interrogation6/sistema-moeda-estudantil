@@ -1,7 +1,7 @@
 import '../styles/default.css'
 import '../styles/App.css'
 import Header from '../components/header.tsx'
-import { ListaAluno } from '../components/lista.tsx'
+import { TabelaAlunos } from '../components/lista.tsx'
 
 function App() {
     return (
@@ -13,7 +13,7 @@ function App() {
             <h3 style={{position: 'fixed', left: '2.5em', top: '1em'}}>Tela Admin</h3>
 
             <div style={{padding: '1em', backgroundColor: '#333333', marginTop: '1em', borderRadius: '20px'}}>
-                <ListaAluno/>
+                <TabelaAlunos/>
             </div>
         </>
     )

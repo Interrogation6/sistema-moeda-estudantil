@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+
+import '../styles/table.css';
 
 export function ListaAluno() {
     const [ids, setIds] = useState<number[]>([]);
@@ -8,7 +11,7 @@ export function ListaAluno() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/getLista");
+                const res = await fetch("http://localhost:8080/getListaAlunos");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data: number[] = await res.json();
                 setIds(data);
@@ -40,4 +43,48 @@ export function ListaAluno() {
             )}
         </div>
     );
+}
+
+export function TabelaAlunos() {
+  const alunos = [
+    { nome: "Ana Souza", curso: "Engenharia Elétrica", escola: "UFMG", saldo: 120.50 },
+    { nome: "Carlos Lima", curso: "Computação", escola: "USP", saldo: 85.00 },
+    { nome: "Marina Torres", curso: "Design", escola: "PUC Minas", saldo: 200.00 },
+  ];
+
+  return (
+    <table className="table-fixed border-collapse w-full">
+    <thead className="">
+        <tr>
+        <th className="w-80">Nome</th>
+        <th>Curso</th>
+        <th>Escola</th>
+        <th>Saldo</th>
+        <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody className="
+      [&>tr:nth-child(odd)>td]:bg-gray-500/10
+      [&>tr:nth-child(even)>td]:bg-gray-500/0
+      dark:[&>tr:nth-child(odd)>td]:bg-white/5
+    ">
+        {alunos.map((aluno, i) => (
+        <tr key={i} className="hover:bg-gray-700">
+            <td className="border-r border-gray-200/10">{aluno.nome}</td>
+            <td className="border-r border-gray-200/10">{aluno.curso}</td>
+            <td className="border-r border-gray-200/10">{aluno.escola}</td>
+            <td className="border-r border-gray-200/10">{"R$ " + aluno.saldo.toFixed(2)}</td>
+            <td className="">
+            <button className="">
+                <Pencil size={18} />
+            </button>
+            <button className="">
+                <Trash2 size={18} />
+            </button>
+            </td>
+        </tr>
+        ))}
+    </tbody>
+    </table>
+  );
 }
