@@ -16,8 +16,10 @@ public class Aluno {
     private Long cpf;
     private Long rg;
     private Long cep;
-    private Long instituicao_id;
-    private Long curso_id;
+    //private Long instituicao_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "curso_id")
+    private Curso curso;
     private Double saldo;
     private Long vantagem_id;
 
@@ -69,18 +71,18 @@ public class Aluno {
     public void setCep(Long cep) {
         this.cep = cep;
     }
-    public Long getInstituicaoId() {
+    /* public Long getInstituicaoId() {
         return instituicao_id;
     }
     public void setInstituicaoId(Long instituicao_id) {
         this.instituicao_id = instituicao_id;
-    }
-    public Long getCursoId() {
+    } */
+    /* public Long getCursoId() {
         return curso_id;
     }
     public void setCursoId(Long curso_id) {
         this.curso_id = curso_id;
-    }
+    } */
     public Double getSaldo() {
         return saldo;
     }

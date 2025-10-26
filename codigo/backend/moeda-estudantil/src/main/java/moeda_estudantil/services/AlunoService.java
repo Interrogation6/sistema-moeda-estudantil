@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import moeda_estudantil.models.Aluno;
 import moeda_estudantil.repository.AlunoRepository;
+import moeda_estudantil.views.AlunoView;
 
 @Service
 public class AlunoService {
@@ -22,8 +23,8 @@ public class AlunoService {
         alunoRepository.deleteById(id);
     }
 
-    public List<Aluno> getAll() {
-        return alunoRepository.findAll();
+    public List<AlunoView> getAll() {
+        return alunoRepository.findAllView();
     }
 
     public Aluno getById(Long id) {
@@ -43,8 +44,8 @@ public class AlunoService {
         newAluno.setCpf(aluno.getCpf());
         newAluno.setRg(aluno.getRg());
         newAluno.setCep(aluno.getCep());
-        newAluno.setInstituicaoId(aluno.getInstituicaoId());
-        newAluno.setCursoId(aluno.getCursoId());
+        /* newAluno.setInstituicaoId(aluno.getInstituicaoId()); */
+        /* newAluno.setCursoId(aluno.getCursoId()); */
         newAluno.setSaldo(aluno.getSaldo());
         newAluno.setVantagemId(aluno.getVantagemId());
 

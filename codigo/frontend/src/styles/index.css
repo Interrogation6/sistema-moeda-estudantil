@@ -51,6 +51,17 @@ button:hover {
   border-color: #646cff;
 }
 
+
+.error {
+  font-weight: bold;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border:solid;
+  border-width: 1px;
+  background-color: rgba(255, 58, 58, 0.1);
+  border-color: rgba(255, 58, 58, 0.63);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
