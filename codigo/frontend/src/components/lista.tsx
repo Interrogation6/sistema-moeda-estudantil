@@ -48,7 +48,14 @@ export function ListaAluno() {
 export function TabelaAlunos() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [alunos, setAlunos] = useState([]);
+    type AlunoItem = {
+        nome: string;
+        curso: string;
+        instituicao: string;
+        saldo: number;
+    };
+    const [alunos, setAlunos] = useState<AlunoItem[]>([]);
+
     useEffect(() => {
         async function fetchIds() {
             try {
@@ -109,7 +116,7 @@ export function TabelaAlunos() {
                 <tr >
                     <th className="text-lg w-80">Nome</th>
                     <th className="text-lg">Curso</th>
-                    <th className="text-lg">Escola</th>
+                    <th className="text-lg">Instituição</th>
                     <th className="text-lg w-35">Saldo</th>
                     <th className="text-lg w-40">Ações</th>
                 </tr>
@@ -122,7 +129,7 @@ export function TabelaAlunos() {
                     <tr key={i} className="hover:bg-gray-700">
                         <td className="border-r border-gray-200/10 pl-4 text-left">{aluno.nome}</td>
                         <td className="border-r border-gray-200/10">{aluno.curso}</td>
-                        <td className="border-r border-gray-200/10">{aluno.escola}</td>
+                        <td className="border-r border-gray-200/10">{aluno.instituicao}</td>
                         <td className="border-r border-gray-200/10">{aluno.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                         <td className="">
                             <button className="me-1 mb-1 mt-1">
