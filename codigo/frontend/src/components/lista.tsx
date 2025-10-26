@@ -55,31 +55,30 @@ export function TabelaAlunos() {
   return (
     <table className="table-fixed border-collapse w-full">
     <thead className="">
-        <tr>
-        <th className="w-80">Nome</th>
-        <th>Curso</th>
-        <th>Escola</th>
-        <th>Saldo</th>
-        <th>Ações</th>
+        <tr >
+        <th className="text-lg w-80">Nome</th>
+        <th className="text-lg">Curso</th>
+        <th className="text-lg">Escola</th>
+        <th className="text-lg w-35">Saldo</th>
+        <th className="text-lg w-40">Ações</th>
         </tr>
     </thead>
     <tbody className="
       [&>tr:nth-child(odd)>td]:bg-gray-500/10
       [&>tr:nth-child(even)>td]:bg-gray-500/0
-      dark:[&>tr:nth-child(odd)>td]:bg-white/5
     ">
         {alunos.map((aluno, i) => (
         <tr key={i} className="hover:bg-gray-700">
-            <td className="border-r border-gray-200/10">{aluno.nome}</td>
+            <td className="border-r border-gray-200/10 pl-4 text-left">{aluno.nome}</td>
             <td className="border-r border-gray-200/10">{aluno.curso}</td>
             <td className="border-r border-gray-200/10">{aluno.escola}</td>
             <td className="border-r border-gray-200/10">{"R$ " + aluno.saldo.toFixed(2)}</td>
             <td className="">
-            <button className="">
-                <Pencil size={18} />
+            <button className="me-1 mb-1 mt-1">
+                <Pencil size={20} className="m-1"/>
             </button>
-            <button className="">
-                <Trash2 size={18} />
+            <button className="me-1 mb-1 mt-1">
+                <Trash2 size={20} className="m-1"/>
             </button>
             </td>
         </tr>

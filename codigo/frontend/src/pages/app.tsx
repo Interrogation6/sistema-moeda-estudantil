@@ -10,9 +10,9 @@ function App() {
             <svg style={{position: 'fixed',width: '2em', left: '0.5em', top: '1.35em'}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
             </svg>
-            <h3 style={{position: 'fixed', left: '2.5em', top: '1em'}}>Tela Admin</h3>
+            <h3 style={{position: 'fixed', left: '2.5em', top: '2em'}}>Tela Admin</h3>
 
-            <div style={{padding: '1em', backgroundColor: '#333333', marginTop: '1em', borderRadius: '20px'}}>
+            <div style={{padding: '1em', backgroundColor: '#333333', marginTop: '1em', borderRadius: '20px', boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.3)'}}>
                 <TabelaAlunos/>
             </div>
         </>

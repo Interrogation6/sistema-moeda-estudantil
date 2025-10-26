@@ -1,7 +1,5 @@
-@import "tailwindcss";
-
 header {
-    background-color: #282c34;
+    background-color: #280c34;
     min-height: 1vh;
     position: fixed;
     width: 100%;
@@ -22,5 +20,6 @@ nav {
     pointer-events: none;
 }
 h3 {
+    font-weight: bold;
     line-height: 0;
 }

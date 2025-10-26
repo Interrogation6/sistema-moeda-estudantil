@@ -1,0 +1,24 @@
+th {
+    padding-bottom: 10px;
+}
+button {
+  padding: 6px;
+  background-color: transparent;
+  border-radius: 40px;
+  transition: 0.15s;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: rgb(191, 226, 255); /* gray-400 como base */
+}
+
+/* Efeito ao clicar — leve fundo com 10% de opacidade */
+button:active {
+  background-color: rgba(0, 0, 0, 0.5); /* gray-500/10 */
+}
+
+/* Efeito hover opcional */
+button:hover {
+    background-color: rgba(0, 0, 0, 0.2); /* gray-500/10 */
+  color: rgb(59 130 246); /* azul (similar a text-blue-500) */
+}
