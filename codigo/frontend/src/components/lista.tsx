@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2} from "lucide-react";
+import ModalEditarAluno from "./alunoModal";
 
 import '../styles/table.css';
 
@@ -126,7 +127,7 @@ export function TabelaAlunos() {
                         <th className="text-lg">Curso</th>
                         <th className="text-lg">Instituição</th>
                         <th className="text-lg w-35">Saldo</th>
-                        <th className="text-lg w-40">Ações</th>
+                        <th className="text-lg w-40"></th>
                     </tr>
                 </thead>
                 <tbody className="
@@ -138,8 +139,8 @@ export function TabelaAlunos() {
                             <td className="border-r border-gray-200/10 pl-4 text-left">{aluno.nome}</td>
                             <td className="border-r border-gray-200/10">{aluno.curso}</td>
                             <td className="border-r border-gray-200/10">{aluno.instituicao}</td>
-                            <td className="border-r border-gray-200/10">{aluno.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                            <td className="">
+                            <td className="text-right pr-4">{aluno.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                            <td>
                                 <button className="me-1 mb-1 mt-1"
                                     onClick={() => handleEdit(aluno)}>
                                     <Pencil size={20} className="m-1" />
@@ -153,23 +154,10 @@ export function TabelaAlunos() {
                 </tbody>
             </table>
             {modalOpen && (
-                <div className="fixed inset-0 bg-black/80 flex items-center justify-center animate-fadeIn">
-                    <div className="bg-gray-800 text-white rounded-xl p-6 w-96 shadow-xl relative">
-                        <h2 className="text-xl font-semibold mb-4">Editar Aluno</h2>
-                        <div className="h-32 flex items-center justify-center border border-gray-600 rounded-lg">
-                            <span className="text-gray-400">Conteúdo do modal (em breve)</span>
-                        </div>
-                        <button
-                            aria-label="Fechar"
-                            onClick={() => setModalOpen(false)}
-                            className="absolute top-2 right-3 w-8 h-8 inline-flex items-center justify-center
-                            rounded-full hover:bg-white/10 active:bg-white/15
-                            leading-none p-0 outline-none focus:outline-none"
-                            >
-                            <X size={24} />
-                        </button>
-                    </div>
-                </div>
+                <ModalEditarAluno
+                    aluno={alunoSelecionado}
+                    onClose={() => setModalOpen(false)}
+                />
             )}
         </>
     );
