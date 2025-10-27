@@ -1,3 +1,3 @@
 package moeda_estudantil.views;
 
-public record CursoView(String nome, String instituicao) {}
+public record CursoView(Long id, String nome, String instituicao) {}

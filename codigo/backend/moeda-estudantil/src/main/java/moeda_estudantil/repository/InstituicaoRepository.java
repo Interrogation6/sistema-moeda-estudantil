@@ -11,6 +11,7 @@ import moeda_estudantil.views.InstituicaoView;
 public interface InstituicaoRepository extends JpaRepository<Instituicao, Long>{
     @Query("""
         select new moeda_estudantil.views.InstituicaoView(
+            i.id,
             i.nome
         )
         from Instituicao i

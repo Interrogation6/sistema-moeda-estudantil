@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 type AlunoItem = { nome: string; curso: string; instituicao: string; saldo: number; };
-type CursoItem = { id: number; nome: string; instituicaoId: number; };
-type InstituicaoItem = { id: number; nome: string; };
+type CursoItem = { id: number; nome: string; instituicao: string; };
 
 interface ModalEditarAlunoProps {
     aluno: AlunoItem | null;
@@ -15,45 +14,47 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
         valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     const [cursos, setCursos] = useState<CursoItem[]>([]);
-    const [instituicoes, setInstituicoes] = useState<InstituicaoItem[]>([]);
 
-    // ⬇️ Lazy initializer: roda só na montagem e já formata o saldo inicial
     const [form, setForm] = useState(() => ({
         nome: aluno?.nome ?? "",
-        cursoId: "" as number | "",
-        instituicaoId: "" as number | "",
-        saldo: aluno ? formatBRL(aluno.saldo) : "", // << já começa com "R$ 120,00"
+        cursoId: "" as string,
+        instituicaoNome: "" as string,
+        saldo: aluno ? formatBRL(aluno.saldo) : "",
     }));
 
-    // Carrega lookups (não precisa reformatar saldo aqui)
     useEffect(() => {
-        (async () => {
-            const [resCursos, resInsts] = await Promise.all([
-                fetch("http://localhost:8080/curso/getAll"),
-                fetch("http://localhost:8080/instituicao/getAll"),
-            ]);
-            const cursosData = await resCursos.json();
-            const instData = await resInsts.json();
-            setCursos(cursosData);
-            setInstituicoes(instData);
-        })();
-    }, []);
+        async function fetchLookups() {
+            const resCursos = await fetch("http://localhost:8080/curso/getAll")
 
-    // Se o modal for aberto com um aluno diferente, sincronize nome/saldo
-    useEffect(() => {
-        if (!aluno) return;
-        setForm(f => ({
-            ...f,
-            nome: aluno.nome,
-            saldo: formatBRL(aluno.saldo), // garante formatação ao trocar de aluno
-        }));
+            const data: CursoItem[] = await resCursos.json();
+            setCursos(data);
+
+            if (!aluno) return;
+
+            const cursoSel = data.find((c) => c.nome === aluno.curso);
+
+            setForm(f => ({
+                ...f,
+                nome: aluno.nome,
+                cursoId: cursoSel ? String(cursoSel.id) : "",
+                instituicaoNome: aluno.instituicao ?? "",
+                saldo: formatBRL(aluno.saldo),
+            }));
+        }
+
+        fetchLookups();
     }, [aluno]);
 
-    const instituicoesFiltradas = (() => {
+    const instituicoesFiltradas: string[] = (() => {
         if (!form.cursoId) return [];
-        const cursoSel = cursos.find((c) => c.id === Number(form.cursoId));
+        const cursoSel = cursos.find(c => String(c.id) === form.cursoId);
         if (!cursoSel) return [];
-        return instituicoes.filter((i) => i.id === cursoSel.instituicaoId);
+        const nomeCurso = cursoSel.nome;
+
+        const nomes = cursos
+        .filter(c => c.nome === nomeCurso)
+        .map(c => c.instituicao);
+        return Array.from(new Set(nomes));
     })();
 
     return (
@@ -75,16 +76,13 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
                         <label className="block text-sm text-gray-300 mb-1">Curso</label>
                         <select
                             value={form.cursoId}
-                            onChange={(e) =>
-                                setForm((f) => ({
-                                    ...f,
-                                    cursoId: e.target.value ? Number(e.target.value) : "",
-                                    instituicaoId: "",
-                                }))
-                            }
+                            onChange={(e) => {
+                                const novoCursoId = e.target.value; // string
+                                setForm(f => ({ ...f, cursoId: novoCursoId, instituicaoNome: "" }));
+                            }}
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                            <option value="">Selecione um curso</option>
+                            {/* <option value="">Selecione um curso</option> */}
                             {cursos.map((c) => (
                                 <option key={c.id} value={c.id}>
                                     {c.nome}
@@ -95,22 +93,17 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
                     <div>
                         <label className="block text-sm text-gray-300 mb-1">Instituição</label>
                         <select
-                            value={form.instituicaoId}
-                            onChange={(e) =>
-                                setForm((f) => ({
-                                    ...f,
-                                    instituicaoId: e.target.value ? Number(e.target.value) : "",
-                                }))
-                            }
+                            value={form.instituicaoNome}
+                             onChange={(e) => setForm(f => ({ ...f, instituicaoNome: e.target.value }))}
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
                             disabled={!form.cursoId}
                         >
                             <option value="">
-                                {form.cursoId ? "Selecione a instituição" : "Selecione um curso primeiro"}
+                                {form.cursoId ? null : "Selecione um curso primeiro"}
                             </option>
-                            {instituicoesFiltradas.map((i) => (
-                                <option key={i.id} value={i.id}>
-                                    {i.nome}
+                            {instituicoesFiltradas.map(nome => (
+                                <option key={nome} value={nome}>
+                                    {nome}
                                 </option>
                             ))}
                         </select>

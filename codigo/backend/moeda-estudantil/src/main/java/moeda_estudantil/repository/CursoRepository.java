@@ -12,6 +12,7 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
 
     @Query("""
         select new moeda_estudantil.views.CursoView(
+            c.id,
             c.nome,
             i.nome
         )
