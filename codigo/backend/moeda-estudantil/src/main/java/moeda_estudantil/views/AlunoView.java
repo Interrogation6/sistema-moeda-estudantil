@@ -1,4 +1,4 @@
 package moeda_estudantil.views;
 
 
-public record AlunoView(String nome, String curso, String instituicao, Double saldo) {}
+public record AlunoView(Long id, String nome, String email, String curso, String instituicao, Double saldo) {}

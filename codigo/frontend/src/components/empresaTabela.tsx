@@ -4,53 +4,13 @@ import ModalEditarAluno from "./alunoModal";
 
 import '../styles/table.css';
 
-export function ListaAluno() {
-    const [ids, setIds] = useState<number[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        async function fetchIds() {
-            try {
-                const res = await fetch("http://localhost:8080/getListaAlunos");
-                if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-                const data: number[] = await res.json();
-                setIds(data);
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError(String(err));
-                }
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchIds();
-    }, []);
-
-    return (
-        <div className="lista-alunos">
-            <h2>Lista de Alunos</h2>
-            {loading && <div>Carregando...</div>}
-            {error && <div style={{ color: 'red' }}>Erro: {error}</div>}
-            {!loading && !error && (
-                <div className="cells">
-                    {ids.length === 0 && <div>Nenhum id encontrado.</div>}
-                    {ids.map((id) => (
-                        <div key={id} className="cell">{id}</div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
-export function TabelaAlunos() {
+export function TabelaEmpresas() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     type AlunoItem = {
+        id: number;
         nome: string;
+        email: string;
         curso: string;
         instituicao: string;
         saldo: number;
@@ -83,10 +43,14 @@ export function TabelaAlunos() {
         setModalOpen(true);
     }
 
+    function handleSaved(alunoAtualizado: AlunoItem) {
+        setAlunos(prev => prev.map(a => a.id === alunoAtualizado.id ? alunoAtualizado : a));
+    }
+
     if (loading) {
         return (
             <div className="flex items-center justify-center gap-3 text-gray-400">
-                <span>Carregando alunos...</span>
+                <span>Carregando empresas...</span>
                 <div role="status">
                     <svg
                         aria-hidden="true"
@@ -123,7 +87,7 @@ export function TabelaAlunos() {
             <table className="table-fixed border-collapse w-full">
                 <thead className="">
                     <tr >
-                        <th className="text-lg w-80">Nome</th>
+                        <th className="text-lg w-80">Nomeee</th>
                         <th className="text-lg">Curso</th>
                         <th className="text-lg">Instituição</th>
                         <th className="text-lg w-35">Saldo</th>
@@ -153,10 +117,11 @@ export function TabelaAlunos() {
                     ))}
                 </tbody>
             </table>
-            {modalOpen && (
+            {modalOpen && alunoSelecionado && (
                 <ModalEditarAluno
                     aluno={alunoSelecionado}
                     onClose={() => setModalOpen(false)}
+                    onSaved={handleSaved}
                 />
             )}
         </>

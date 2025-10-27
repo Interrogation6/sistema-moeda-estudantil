@@ -11,7 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("""
          select new moeda_estudantil.views.AlunoView(
+           a.id,
            a.nome,
+           a.email,
            c.nome,
            i.nome,
            a.saldo
@@ -19,6 +21,7 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
          from Aluno a
          join a.curso c
          join c.instituicao i
+         order by a.nome
          """)
   List<AlunoView> findAllView();
 }

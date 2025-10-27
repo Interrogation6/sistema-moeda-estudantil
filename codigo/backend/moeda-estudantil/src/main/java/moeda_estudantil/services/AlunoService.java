@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import moeda_estudantil.models.Aluno;
 import moeda_estudantil.repository.AlunoRepository;
+import moeda_estudantil.repository.CursoRepository;
+import moeda_estudantil.views.AlunoDTO;
 import moeda_estudantil.views.AlunoView;
 
 @Service
@@ -14,6 +16,8 @@ public class AlunoService {
     
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private CursoRepository cursoRepository;
 
     public Aluno create(Aluno aluno) {
         return alunoRepository.save(aluno);
@@ -50,5 +54,27 @@ public class AlunoService {
         newAluno.setVantagemId(aluno.getVantagemId());
 
         return alunoRepository.save(newAluno);
+    }
+
+    public AlunoView patch(Long id, AlunoDTO dto) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow();
+  if (dto.nome() != null && !dto.nome().isBlank())
+      aluno.setNome(dto.nome());
+  if (dto.email() != null && !dto.email().isBlank())
+      aluno.setEmail(dto.email());
+  if (dto.saldo() != null)
+      aluno.setSaldo(dto.saldo());
+  if (dto.cursoId() != null) {
+      var curso = cursoRepository.findById(dto.cursoId()).orElseThrow();
+      aluno.setCurso(curso);
+  }
+  var s = alunoRepository.save(aluno);
+  return new AlunoView(
+    s.getId(), 
+    s.getNome(),
+    s.getEmail(),
+    s.getCurso().getNome(),
+    s.getCurso().getInstituicao().getNome(),
+    s.getSaldo());
     }
 }

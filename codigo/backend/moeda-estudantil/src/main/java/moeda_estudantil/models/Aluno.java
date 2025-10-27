@@ -77,12 +77,12 @@ public class Aluno {
     public void setInstituicaoId(Long instituicao_id) {
         this.instituicao_id = instituicao_id;
     } */
-    /* public Long getCursoId() {
-        return curso_id;
+    public Curso getCurso() {
+        return curso;
     }
-    public void setCursoId(Long curso_id) {
-        this.curso_id = curso_id;
-    } */
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
     public Double getSaldo() {
         return saldo;
     }

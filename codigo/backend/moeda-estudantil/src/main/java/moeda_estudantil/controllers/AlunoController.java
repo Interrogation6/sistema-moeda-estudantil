@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import moeda_estudantil.models.Aluno;
 import moeda_estudantil.services.AlunoService;
+import moeda_estudantil.views.AlunoDTO;
 import moeda_estudantil.views.AlunoView;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -46,6 +48,11 @@ public class AlunoController {
     @GetMapping("/{id}")
     public ResponseEntity<Aluno> getById(@PathVariable Long id) {
         return ResponseEntity.ok(alunoService.getById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AlunoView> patch(@PathVariable Long id, @RequestBody AlunoDTO entity) {
+        return ResponseEntity.ok(alunoService.patch(id, entity));
     }
 
     @PutMapping("/{id}")

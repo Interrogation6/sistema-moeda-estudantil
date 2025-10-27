@@ -1,7 +1,7 @@
 import '../styles/default.css'
 import '../styles/App.css'
 import Header from '../components/header.tsx'
-import { TabelaAlunos } from '../components/lista.tsx'
+import { PainelTabelas } from '../components/PainelTabelas.tsx'
 
 function App() {
     return (
@@ -12,9 +12,8 @@ function App() {
             </svg>
             <h3 style={{position: 'fixed', left: '2.5em', top: '2em'}}>Tela Admin</h3>
 
-            <div style={{padding: '1em', backgroundColor: '#333333', marginTop: '1em', borderRadius: '20px', boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.3)'}}>
-                <TabelaAlunos/>
-            </div>
+            
+                <PainelTabelas/>
         </>
     )
 }

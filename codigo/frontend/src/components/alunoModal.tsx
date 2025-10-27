@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-type AlunoItem = { nome: string; curso: string; instituicao: string; saldo: number; };
+type AlunoItem = { id: number; nome: string; email: string; curso: string; instituicao: string; saldo: number; };
 type CursoItem = { id: number; nome: string; instituicao: string; };
+type FormAluno = { nome: string; email: string; cursoId: string; instituicaoNome: string; saldo: string; };
+type UpdateAlunoDTO = Partial<{nome: string; email: string; cursoId: number; saldo: number;}>;
 
 interface ModalEditarAlunoProps {
-    aluno: AlunoItem | null;
+    aluno: AlunoItem ;
     onClose: () => void;
+    onSaved: (alunoAtualizado: AlunoItem) => void;
 }
 
-export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoProps) {
+export default function ModalEditarAluno({ aluno, onClose, onSaved }: ModalEditarAlunoProps) {
     const formatBRL = (valor: number) =>
         valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     const [cursos, setCursos] = useState<CursoItem[]>([]);
 
-    const [form, setForm] = useState(() => ({
+    const [form, setForm] = useState<FormAluno>(() => ({
         nome: aluno?.nome ?? "",
+        email: aluno?.email ?? "",
         cursoId: "" as string,
         instituicaoNome: "" as string,
         saldo: aluno ? formatBRL(aluno.saldo) : "",
@@ -36,6 +40,7 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
             setForm(f => ({
                 ...f,
                 nome: aluno.nome,
+                email: aluno.email,
                 cursoId: cursoSel ? String(cursoSel.id) : "",
                 instituicaoNome: aluno.instituicao ?? "",
                 saldo: formatBRL(aluno.saldo),
@@ -52,8 +57,8 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
         const nomeCurso = cursoSel.nome;
 
         const nomes = cursos
-        .filter(c => c.nome === nomeCurso)
-        .map(c => c.instituicao);
+            .filter(c => c.nome === nomeCurso)
+            .map(c => c.instituicao);
         return Array.from(new Set(nomes));
     })();
 
@@ -69,6 +74,15 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
                             type="text"
                             value={form.nome}
                             onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))}
+                            className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-300 mb-1">Email</label>
+                        <input
+                            type="text"
+                            value={form.email}
+                            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -94,7 +108,7 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
                         <label className="block text-sm text-gray-300 mb-1">Instituição</label>
                         <select
                             value={form.instituicaoNome}
-                             onChange={(e) => setForm(f => ({ ...f, instituicaoNome: e.target.value }))}
+                            onChange={(e) => setForm(f => ({ ...f, instituicaoNome: e.target.value }))}
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
                             disabled={!form.cursoId}
                         >
@@ -133,7 +147,9 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
 
                 <div className="mt-6 flex justify-end gap-2">
                     <button className="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600" onClick={onClose}>Cancelar</button>
-                    <button className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500" onClick={onClose}>Salvar</button>
+                    <button className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
+                        disabled={!form.cursoId || !form.nome || !form.saldo}
+                        onClick={() => Salvar(form, aluno, cursos, onSaved, onClose)}>Salvar</button>
                 </div>
                 <button aria-label="Fechar" onClick={onClose}
                     className="absolute top-2 right-3 w-8 h-8 inline-flex items-center justify-center
@@ -143,4 +159,59 @@ export default function ModalEditarAluno({ aluno, onClose }: ModalEditarAlunoPro
             </div>
         </div>
     );
+}
+
+async function Salvar(
+    form: FormAluno,
+    aluno: AlunoItem,
+    cursos: CursoItem[],
+    onSaved: (aluno: AlunoItem) => void,
+    onClose: () => void
+) {
+    const saldoNumber = Number(form.saldo.replace(/\D/g, "")) / 100;
+    const cursoSel = cursos.find((c) => String(c.id) === form.cursoId);
+
+    const payload = buildPayloadParcial(aluno, form, cursoSel);
+
+    if (Object.keys(payload).length === 0) {
+        onClose(); // nada mudou
+        return;
+    }
+    try {
+        const res = await fetch(`http://localhost:8080/aluno/${aluno.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const alunoAtualizado: AlunoItem = {
+            ...aluno,
+            nome: form.nome,
+            curso: cursoSel ? cursoSel.nome : aluno.curso,
+            instituicao: form.instituicaoNome || aluno.instituicao,
+            saldo: saldoNumber,
+        };
+
+        onSaved(alunoAtualizado);
+        onClose();
+    } catch (err) {
+        console.error("Erro ao salvar aluno:", err);
+    }
+}
+function buildPayloadParcial(
+  aluno: AlunoItem,
+  form: FormAluno,
+  cursoSel?: CursoItem,
+): UpdateAlunoDTO {
+  const dto: UpdateAlunoDTO = {};
+  const saldoNumber = Number(form.saldo.replace(/\D/g, "")) / 100;
+
+  if (form.nome.trim() && form.nome !== aluno.nome) dto.nome = form.nome;
+  if (form.email?.trim() && form.email !== (aluno as any).email) dto.email = form.email; // se tiver email no AlunoItem
+  if (cursoSel && cursoSel.id !== (aluno as any).cursoId) dto.cursoId = cursoSel.id;
+  if (!Number.isNaN(saldoNumber) && saldoNumber !== aluno.saldo) dto.saldo = saldoNumber;
+
+  return dto;
 }
