@@ -36,7 +36,7 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @PostMapping
-    public String criar(@RequestBody Aluno entity) {
+    public String create(@RequestBody AlunoDTO entity) {
         return ResponseEntity.ok(alunoService.create(entity)).toString();
     }
 
@@ -53,11 +53,6 @@ public class AlunoController {
     @PatchMapping("/{id}")
     public ResponseEntity<AlunoView> patch(@PathVariable Long id, @RequestBody AlunoDTO entity) {
         return ResponseEntity.ok(alunoService.patch(id, entity));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Aluno> update(@PathVariable Long id, @RequestBody Aluno entity) {
-        return ResponseEntity.ok(alunoService.update(id, entity));
     }
     
     @DeleteMapping("/{id}")

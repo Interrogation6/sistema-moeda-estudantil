@@ -19,7 +19,22 @@ public class AlunoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    public Aluno create(Aluno aluno) {
+    public Aluno create(AlunoDTO dto) {
+        Aluno aluno = new Aluno();
+        
+        aluno.setSenhaHash(dto.senha_hash());
+        if (dto.nome() != null && !dto.nome().isBlank())
+            aluno.setNome(dto.nome());
+        if (dto.email() != null && !dto.email().isBlank())
+            aluno.setEmail(dto.email());
+        if (dto.saldo() != null)
+            aluno.setSaldo(dto.saldo());
+        if (dto.cursoId() != null) {
+            var curso = cursoRepository.findById(dto.cursoId()).orElseThrow();
+            aluno.setCurso(curso);
+        }
+
+
         return alunoRepository.save(aluno);
     }
 

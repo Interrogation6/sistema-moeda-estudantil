@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pencil, Trash2} from "lucide-react";
+import { Pencil, Trash2, Plus} from "lucide-react";
 import ModalEditarAluno from "./alunoModal";
 
 import '../styles/table.css';
@@ -38,6 +38,7 @@ export function TabelaEmpresas() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoItem | null>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
     function handleEdit(aluno: AlunoItem) {
         setAlunoSelecionado(aluno);
         setModalOpen(true);
@@ -47,10 +48,29 @@ export function TabelaEmpresas() {
         setAlunos(prev => prev.map(a => a.id === alunoAtualizado.id ? alunoAtualizado : a));
     }
 
+    async function handleDelete(id: number) {
+        const ok = globalThis.confirm("Tem certeza que deseja excluir este aluno?");
+        if (!ok) return;
+        try {
+            setDeletingId(id);
+            const res = await fetch(`http://localhost:8080/aluno/${id}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            setAlunos(prev => prev.filter(a => a.id !== id));
+        } catch (e) {
+            console.error("Erro ao deletar aluno:", e);
+            alert("Não foi possível excluir o aluno. Tente novamente.");
+        } finally {
+            setDeletingId(null);
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex items-center justify-center gap-3 text-gray-400">
-                <span>Carregando empresas...</span>
+                <span>Carregando alunos...</span>
                 <div role="status">
                     <svg
                         aria-hidden="true"
@@ -87,7 +107,7 @@ export function TabelaEmpresas() {
             <table className="table-fixed border-collapse w-full">
                 <thead className="">
                     <tr >
-                        <th className="text-lg w-80">Nomeee</th>
+                        <th className="text-lg w-80">Nome</th>
                         <th className="text-lg">Curso</th>
                         <th className="text-lg">Instituição</th>
                         <th className="text-lg w-35">Saldo</th>
@@ -109,7 +129,9 @@ export function TabelaEmpresas() {
                                     onClick={() => handleEdit(aluno)}>
                                     <Pencil size={20} className="m-1" />
                                 </button>
-                                <button className="me-1 mb-1 mt-1">
+                                <button className="me-1 mb-1 mt-1"
+                                    onClick={() => handleDelete(aluno.id)}
+                                    disabled={deletingId === aluno.id}>
                                     <Trash2 size={20} className="m-1" />
                                 </button>
                             </td>
@@ -117,6 +139,10 @@ export function TabelaEmpresas() {
                     ))}
                 </tbody>
             </table>
+            <button className="me-1 mb-1 mt-1">
+                <Plus size={24}/>
+            </button>
+
             {modalOpen && alunoSelecionado && (
                 <ModalEditarAluno
                     aluno={alunoSelecionado}
