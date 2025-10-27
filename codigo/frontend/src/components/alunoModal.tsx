@@ -226,7 +226,7 @@ function buildPayloadParcial(
   if (form.email?.trim() && form.email !== (aluno as any).email) dto.email = form.email; // se tiver email no AlunoItem
   if (cursoSel && cursoSel.id !== (aluno as any).cursoId) dto.cursoId = cursoSel.id;
   if (!Number.isNaN(saldoNumber) && saldoNumber !== aluno.saldo) dto.saldo = saldoNumber;
-  else dto
+  else dto.saldo = 0;
   if (isCreate) dto.senha_hash = "1";
 
   return dto;
