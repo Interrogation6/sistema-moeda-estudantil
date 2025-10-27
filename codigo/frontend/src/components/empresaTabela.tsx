@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
 import { Pencil, Trash2, Plus} from "lucide-react";
-import ModalEditarAluno from "./alunoModal";
+import ModalEditarEmpresa from "./empresaModal";
 
 import '../styles/table.css';
 
 export function TabelaEmpresas() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    type AlunoItem = {
+    type EmpresaItem = {
         id: number;
         nome: string;
-        email: string;
-        curso: string;
-        instituicao: string;
-        saldo: number;
+        login: string;
     };
-    const [alunos, setAlunos] = useState<AlunoItem[]>([]);
+    const [empresas, setEmpresas] = useState<EmpresaItem[]>([]);
 
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/aluno/getAll");
+                const res = await fetch("http://localhost:8080/empresa/getAll");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
-                setAlunos(data);
+                setEmpresas(data);
             } catch (err: unknown) {
                 if (err instanceof Error)
                     setError(err.message);
@@ -37,31 +34,41 @@ export function TabelaEmpresas() {
     })
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoItem | null>(null);
+    const [empresaSelecionada, setEmpresaSelecionada] = useState<EmpresaItem | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
-    function handleEdit(aluno: AlunoItem) {
-        setAlunoSelecionado(aluno);
+    const [isCreate, setIsCreate] = useState(false);
+    function handleCreate() {
+        setEmpresaSelecionada({
+            id: 0,                  // id fictício, será ignorado no POST
+            nome: "",
+            login: "",
+        });
+        setModalOpen(true);
+        setIsCreate(true);
+    }
+    function handleEdit(empresa: EmpresaItem) {
+        setEmpresaSelecionada(empresa);
         setModalOpen(true);
     }
 
-    function handleSaved(alunoAtualizado: AlunoItem) {
-        setAlunos(prev => prev.map(a => a.id === alunoAtualizado.id ? alunoAtualizado : a));
+    function handleSaved(empresaAtualizada: EmpresaItem) {
+        setEmpresas(prev => prev.map(a => a.id === empresaAtualizada.id ? empresaAtualizada : a));
     }
 
     async function handleDelete(id: number) {
-        const ok = globalThis.confirm("Tem certeza que deseja excluir este aluno?");
+        const ok = globalThis.confirm("Tem certeza que deseja excluir esta empresa?");
         if (!ok) return;
         try {
             setDeletingId(id);
-            const res = await fetch(`http://localhost:8080/aluno/${id}`, {
+            const res = await fetch(`http://localhost:8080/empresa/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-            setAlunos(prev => prev.filter(a => a.id !== id));
+            setEmpresas(prev => prev.filter(a => a.id !== id));
         } catch (e) {
-            console.error("Erro ao deletar aluno:", e);
-            alert("Não foi possível excluir o aluno. Tente novamente.");
+            console.error("Erro ao deletar empresa:", e);
+            alert("Não foi possível excluir o empresa. Tente novamente.");
         } finally {
             setDeletingId(null);
         }
@@ -70,7 +77,7 @@ export function TabelaEmpresas() {
     if (loading) {
         return (
             <div className="flex items-center justify-center gap-3 text-gray-400">
-                <span>Carregando alunos...</span>
+                <span>Carregando empresas...</span>
                 <div role="status">
                     <svg
                         aria-hidden="true"
@@ -97,7 +104,7 @@ export function TabelaEmpresas() {
     if (error) {
         return (
             <div className="error">
-                Erro ao carregar alunos: {error}
+                Erro ao carregar empresas: {error}
             </div>
         );
     }
@@ -108,9 +115,8 @@ export function TabelaEmpresas() {
                 <thead className="">
                     <tr >
                         <th className="text-lg w-80">Nome</th>
-                        <th className="text-lg">Curso</th>
-                        <th className="text-lg">Instituição</th>
-                        <th className="text-lg w-35">Saldo</th>
+                        <th className="text-lg">Login</th>
+                        <th className="text-lg">Vantagens</th>
                         <th className="text-lg w-40"></th>
                     </tr>
                 </thead>
@@ -118,20 +124,19 @@ export function TabelaEmpresas() {
       [&>tr:nth-child(odd)>td]:bg-gray-500/10
       [&>tr:nth-child(even)>td]:bg-gray-500/0
     ">
-                    {alunos.map((aluno, i) => (
+                    {empresas.map((empresa, i) => (
                         <tr key={i} className="hover:bg-gray-700">
-                            <td className="border-r border-gray-200/10 pl-4 text-left">{aluno.nome}</td>
-                            <td className="border-r border-gray-200/10">{aluno.curso}</td>
-                            <td className="border-r border-gray-200/10">{aluno.instituicao}</td>
-                            <td className="text-right pr-4">{aluno.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                            <td className="border-r border-gray-200/10 pl-4 text-left">{empresa.nome}</td>
+                            <td className="border-r border-gray-200/10">{empresa.login}</td>
+                            <td className="border-r border-gray-200/10"></td>
                             <td>
                                 <button className="me-1 mb-1 mt-1"
-                                    onClick={() => handleEdit(aluno)}>
+                                    onClick={() => handleEdit(empresa)}>
                                     <Pencil size={20} className="m-1" />
                                 </button>
                                 <button className="me-1 mb-1 mt-1"
-                                    onClick={() => handleDelete(aluno.id)}
-                                    disabled={deletingId === aluno.id}>
+                                    onClick={() => handleDelete(empresa.id)}
+                                    disabled={deletingId === empresa.id}>
                                     <Trash2 size={20} className="m-1" />
                                 </button>
                             </td>
@@ -139,13 +144,15 @@ export function TabelaEmpresas() {
                     ))}
                 </tbody>
             </table>
-            <button className="me-1 mb-1 mt-1">
-                <Plus size={24}/>
+            <button className="me-1 mb-1 mt-1"
+            onClick={() => handleCreate()}>
+                <Plus size={24} className="m-1"/>
             </button>
 
-            {modalOpen && alunoSelecionado && (
-                <ModalEditarAluno
-                    aluno={alunoSelecionado}
+            {modalOpen && empresaSelecionada && (
+                <ModalEditarEmpresa
+                    empresa={empresaSelecionada}
+                    isCreate = {isCreate}
                     onClose={() => setModalOpen(false)}
                     onSaved={handleSaved}
                 />

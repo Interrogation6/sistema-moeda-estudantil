@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import moeda_estudantil.models.Empresa;
 import moeda_estudantil.repository.EmpresaRepository;
+import moeda_estudantil.views.EmpresaDTO;
+import moeda_estudantil.views.EmpresaView;
 
 @Service
 public class EmpresaService {
@@ -14,7 +16,15 @@ public class EmpresaService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    public Empresa create(Empresa empresa) {
+    public Empresa create(EmpresaDTO dto) {
+        Empresa empresa = new Empresa();
+
+        empresa.setSenhaHash(dto.senha_hash());
+         if (dto.nome() != null && !dto.nome().isBlank())
+            empresa.setNome(dto.nome());
+        if (dto.login() != null && !dto.login().isBlank())
+            empresa.setLogin(dto.login());
+
         return empresaRepository.save(empresa);
     }
 
@@ -22,8 +32,8 @@ public class EmpresaService {
         empresaRepository.deleteById(id);
     }
 
-    public List<Empresa> getAll() {
-        return empresaRepository.findAll();
+    public List<EmpresaView> getAll() {
+        return empresaRepository.findAllView();
     }
 
     public Empresa getById(Long id) {
@@ -41,5 +51,18 @@ public class EmpresaService {
         newEmpresa.setVantagemId(empresa.getVantagemId());
 
         return empresaRepository.save(newEmpresa);
+    }
+    
+    public EmpresaView patch(Long id, EmpresaDTO dto) {
+        Empresa empresa = empresaRepository.findById(id).orElseThrow();
+        if(dto.nome() != null && !dto.nome().isBlank())
+            empresa.setNome(dto.nome());
+        if(dto.login() != null && !dto.login().isBlank())
+            empresa.setLogin(dto.login());
+        var s = empresaRepository.save(empresa);
+        return new EmpresaView(
+            s.getId(),
+            s.getNome(),
+            s.getLogin());
     }
 }
