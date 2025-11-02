@@ -1,8 +1,13 @@
-import '../styles/header.css'
-import { User } from 'lucide-react'
-function header() {
+import '../styles/header.css';
+import { User } from 'lucide-react';
+import { useLogin } from '../hooks/useLogin';
+
+function Header() {
+
+    const { isLoggedIn, setIsLoggedIn } = useLogin();
+
     const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
-    const isLoggedIn = false;
+
     return (
         <>
             <header>
@@ -15,7 +20,9 @@ function header() {
                     <div className="flex-1 justify-center">
                         <button className={`${btnBase}`}>Entrar</button>
                         <span className='text-2xl text-blue-400/50'>/</span>
-                        <button className={`${btnBase}`}>Cadastrar</button>
+                        <button className={`${btnBase}`}
+                        onClick={() => setIsLoggedIn(true)}
+                        >Cadastrar</button>
                     </div>
                     )}
                     {isLoggedIn && (
@@ -23,7 +30,9 @@ function header() {
                         <div className="inline-block bg-blue-800/10 rounded-full p-2">
                             <User size={24}/>
                         </div>
-                        <p className="text-xl mx-2">Kelvyn</p>
+                        <button className="text-xl mx-2"
+                        onClick={() => setIsLoggedIn(false)}
+                        >Kelvyn</button>
                     </div>
                     )}
                 </div>
@@ -33,4 +42,4 @@ function header() {
         </>
     )
 }
-export default header
+export default Header
