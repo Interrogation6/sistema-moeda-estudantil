@@ -1,13 +1,33 @@
-import '../styles/default.css'
-
+import '../styles/header.css'
+import { User } from 'lucide-react'
 function header() {
+    const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
+    const isLoggedIn = false;
     return (
         <>
-            <header style={{height: '2em'}}>
-                <nav style={{marginTop: '0.4em'}}>
-                    <img src={"/coin.png"} alt="Icone Moeda" className="icon"/>
-                    <h3>Sistema de Moeda Estudantil</h3>
-                </nav>
+            <header>
+                <div className="flex w-full mx-auto max-w-300 h-15">
+                    <nav className="flex-4 w-full justify-center">
+                        <img src={"/coin.png"} alt="Icone Moeda" className="icon" />
+                        <h3>Sistema de Moeda Estudantil</h3>
+                    </nav>
+                    {!isLoggedIn && (
+                    <div className="flex-1 justify-center">
+                        <button className={`${btnBase}`}>Entrar</button>
+                        <span className='text-2xl text-blue-400/50'>/</span>
+                        <button className={`${btnBase}`}>Cadastrar</button>
+                    </div>
+                    )}
+                    {isLoggedIn && (
+                    <div className="flex-1 flex items-center justify-center">
+                        <div className="inline-block bg-blue-800/10 rounded-full p-2">
+                            <User size={24}/>
+                        </div>
+                        <p className="text-xl mx-2">Kelvyn</p>
+                    </div>
+                    )}
+                </div>
+                
             </header>
             <div style={{height: '2.5em'}}/>
         </>

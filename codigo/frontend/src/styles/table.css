@@ -1,24 +1,24 @@
 th {
     padding-bottom: 10px;
 }
-button {
+.table-button {
   padding: 6px;
   background-color: transparent;
   border-radius: 40px;
-  transition: 0.15s;
   border: none;
   outline: none;
   cursor: pointer;
+  transition: 0.15s;
   color: rgb(191, 226, 255); /* gray-400 como base */
 }
 
 /* Efeito hover opcional */
-button:hover {
+.table-button:hover {
     background-color: rgba(0, 0, 0, 0.2); /* gray-500/10 */
   color: rgb(59 130 246); /* azul (similar a text-blue-500) */
 }
 
 /* Efeito ao clicar — leve fundo com 10% de opacidade */
-button:active {
+.table-button:active {
   background-color: rgba(0, 0, 0, 0.5); /* gray-500/10 */
 }

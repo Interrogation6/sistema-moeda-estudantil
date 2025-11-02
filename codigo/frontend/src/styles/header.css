@@ -1,0 +1,9 @@
+.header-btn-primary {
+    color:#7c87ff7e;
+    font-size:large;
+    border-radius:0.5rem;
+    font-weight: bold;
+    margin: auto 2px;
+    padding-inline: 10px;
+    transition: 0.25s;
+}

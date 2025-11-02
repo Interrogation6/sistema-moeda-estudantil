@@ -181,11 +181,11 @@ export function TabelaAlunos() {
                             <td className="border-r border-gray-200/10">{aluno.instituicao}</td>
                             <td className="text-right pr-4">{aluno.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                             <td>
-                                <button className="me-1 mb-1 mt-1"
+                                <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleEdit(aluno)}>
                                     <Pencil size={20} className="m-1" />
                                 </button>
-                                <button className="me-1 mb-1 mt-1"
+                                <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleDelete(aluno.id)}
                                     disabled={deletingId === aluno.id}>
                                     <Trash2 size={20} className="m-1" />
@@ -195,7 +195,7 @@ export function TabelaAlunos() {
                     ))}
                 </tbody>
             </table>
-            <button className="me-1 mb-1 mt-1"
+            <button className="table-button me-1 mb-1 mt-1"
             onClick={() => handleCreate()}>
                 <Plus size={24} className="m-1"/>
             </button>

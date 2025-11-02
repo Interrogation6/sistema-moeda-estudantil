@@ -62,8 +62,8 @@ export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose,
                 </div>
 
                 <div className="mt-6 flex justify-end gap-2">
-                    <button className="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600" onClick={onClose}>Cancelar</button>
-                    <button className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
+                    <button className="table-button px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600" onClick={onClose}>Cancelar</button>
+                    <button className="table-button px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
                         disabled={!form.nome || !form.login}
                     onClick={() => {if(!empresa) return;
                         Salvar(form, empresa, onSaved, onClose, isCreate)}}>Salvar</button>

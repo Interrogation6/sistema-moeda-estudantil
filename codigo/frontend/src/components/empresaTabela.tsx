@@ -130,11 +130,11 @@ export function TabelaEmpresas() {
                             <td className="border-r border-gray-200/10">{empresa.login}</td>
                             <td className="border-r border-gray-200/10"></td>
                             <td>
-                                <button className="me-1 mb-1 mt-1"
+                                <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleEdit(empresa)}>
                                     <Pencil size={20} className="m-1" />
                                 </button>
-                                <button className="me-1 mb-1 mt-1"
+                                <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleDelete(empresa.id)}
                                     disabled={deletingId === empresa.id}>
                                     <Trash2 size={20} className="m-1" />
@@ -144,7 +144,7 @@ export function TabelaEmpresas() {
                     ))}
                 </tbody>
             </table>
-            <button className="me-1 mb-1 mt-1"
+            <button className="table-button me-1 mb-1 mt-1"
             onClick={() => handleCreate()}>
                 <Plus size={24} className="m-1"/>
             </button>

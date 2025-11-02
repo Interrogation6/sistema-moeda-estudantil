@@ -10,7 +10,7 @@ export function PainelTabelas() {
   const [tab, setTab] = useState<TabKey>("alunos");
 
   const btnBase =
-    "inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors outline-none";
+    "table-button inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors outline-none";
   const active = "bg-blue-600 text-white";
   const idle = "bg-transparent text-gray-300 hover:bg-white/10";
 
