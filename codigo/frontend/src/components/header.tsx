@@ -2,10 +2,12 @@ import '../styles/header.css';
 import { User } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
 
     const { user, displayName, isLoggedIn, logout, openLogin } = useLogin();
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
@@ -58,7 +60,7 @@ function Header() {
                                     role="menuitem"
                                     className={`${dropdownItem} py-5 border-b-1 border-white/10`}
                                     onClick={() => {
-
+                                        navigate("/extrato");
                                         setIsMenuOpen(false);
                                     }}
                                 >R$ {user?.saldo ? user.saldo : "**.**"}</button>
