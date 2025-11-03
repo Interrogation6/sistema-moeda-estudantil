@@ -1,12 +1,15 @@
 import '../styles/header.css';
 import { User } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
+import { useState } from 'react';
 
 function Header() {
 
-    const { isLoggedIn, logout, openLogin } = useLogin();
+    const { user, displayName, isLoggedIn, logout, openLogin } = useLogin();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
+    const dropdownItem = "block w-full text-left px-6 py-3 text-base leading-5 hover:bg-white/5 focus:bg-white/10 focus:outline-none";
 
     return (
         <>
@@ -30,14 +33,52 @@ function Header() {
                     </div>
                     )}
                     {isLoggedIn && (
-                    <div className="flex-1 flex items-center justify-center">
-                        <div className="inline-block bg-blue-800/10 rounded-full p-2">
-                            <User size={24}/>
+                        <div className="flex-1 flex items-center justify-center relative">
+                            <button
+                                className="flex items-center justify-center h-full"
+                                onClick={() => setIsMenuOpen(prev => !prev)}
+                            >
+                                <div className="inline-block bg-blue-800/10 rounded-full p-2">
+                                    <User size={24} />
+                                </div>
+                                <span className="text-xl mx-2">{user ? displayName : "null"}</span>
+                            </button>
+
+                            <div
+                                role="menu"
+                                className={[
+                                    "absolute inset-x-0 top-full w-full z-50",
+                                    "rounded-b-xl border border-white/10 bg-neutral-800 backdrop-blur",
+                                    "shadow-lg ring-1 ring-black/5 overflow-hidden",
+                                    "origin-top transition duration-300 ease-out",
+                                    isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-y-0 pointer-events-none",
+                                ].join(" ")}
+                            >
+                                <button
+                                    role="menuitem"
+                                    className={`${dropdownItem} py-5 border-b-1 border-white/10`}
+                                    onClick={() => {
+
+                                        setIsMenuOpen(false);
+                                    }}
+                                >R$ {user?.saldo ? user.saldo : "**.**"}</button>
+                                <button
+                                    role="menuitem"
+                                    className={`${dropdownItem} border-b-1 border-white/10`}
+                                    onClick={() => {
+                                        setIsMenuOpen(false);
+                                    }}
+                                >Enviar Moedas</button>
+                                <button
+                                    role="menuitem"
+                                    className={`${dropdownItem}`}
+                                    onClick={() => {
+                                        logout();
+                                        setIsMenuOpen(false);
+                                    }}
+                                >Sair</button>
+                            </div>
                         </div>
-                        <button className="text-xl mx-2"
-                        onClick={logout}
-                        >Kelvyn</button>
-                    </div>
                     )}
                 </div>
                 

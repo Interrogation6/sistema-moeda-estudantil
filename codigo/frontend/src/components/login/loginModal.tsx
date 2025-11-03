@@ -3,6 +3,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { useLogin } from "../../hooks/useLogin";
 import { btnBase } from "../buttonBase";
+import type { LoginResponse } from "../../contexts/loginContext";
 
 export default function LoginModal() {
     //const [loading, setLoading] = useState(false);
@@ -13,10 +14,7 @@ export default function LoginModal() {
 
     const { closeLogin, login } = useLogin();
 
-    type LoginResponse = {
-        token: string;
-        user: { id: number; name: string; email: string };
-    };
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -54,7 +52,7 @@ export default function LoginModal() {
 
             const data: LoginResponse = await res.json();
             console.log("Login bem-sucedido:", data);
-            login();
+            login(data);
             closeLogin();
 
         } catch (err: unknown) {

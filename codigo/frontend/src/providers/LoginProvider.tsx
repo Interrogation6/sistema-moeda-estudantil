@@ -1,18 +1,29 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { LoginContext, type AuthIntent } from "../contexts/loginContext";
+import type { LoginResponse } from "../contexts/loginContext";
 
 export function LoginProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [user, setUser] = useState<LoginResponse | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login  = () => setIsLoggedIn(true);
+  const login = useCallback((data: LoginResponse) => {
+    setUser(data);
+    setIsLoggedIn(true);
+  }, []);
   const logout = () => setIsLoggedIn(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [intent, setIntent] = useState<AuthIntent>(null);
   const openLogin  = (i: Exclude<AuthIntent, null>) => { setIntent(i); setLoginModalOpen(true); };
   const closeLogin = () => { setLoginModalOpen(false); setIntent(null); };
 
+  const displayName = useMemo(() => {
+    const nome: string = user?.nome ?? "";
+    return nome.split(" ")[0].slice(0, 8);
+  }, [user]);
   
-  const obj = useMemo(() => ({ isLoggedIn, setIsLoggedIn, login, logout, loginModalOpen, intent, openLogin, closeLogin }), [isLoggedIn, loginModalOpen, intent]);
+  const obj = useMemo(() => ({
+    user, isLoggedIn, setIsLoggedIn, displayName, login, logout, loginModalOpen, intent, openLogin, closeLogin
+  }), [user, isLoggedIn, displayName, login, loginModalOpen, intent]);
 
   return (
     <LoginContext.Provider value={obj}>

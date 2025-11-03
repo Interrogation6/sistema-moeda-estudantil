@@ -35,6 +35,7 @@ public class AuthService {
                 aluno.getNome(),
                 aluno.getEmail(),
                 "ALUNO", // TODO: adcionar professor e admin
+                aluno.getSaldo(),
                 "token-falso-temporario");
     }
 }
