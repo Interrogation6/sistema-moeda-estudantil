@@ -6,6 +6,6 @@ export function useLogin() {
   if (!context) {
     throw new Error("useLogin deve ser usado dentro de um LoginProvider");
   }
-  console.log('[useLogin]', context.isLoggedIn);
+  //console.log('[useLogin]', context.isLoggedIn);
   return context;
 }

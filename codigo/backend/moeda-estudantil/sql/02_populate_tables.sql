@@ -23,6 +23,8 @@ INSERT INTO curso (nome, instituicao_id) VALUES
 ('Design',              3);  -- PUC Minas
 
 INSERT INTO aluno (nome, email, senha_hash, saldo, curso_id) VALUES
+('Quick Teste',	'a@a', crypt('1234', gen_salt('bf', 12)), 100.10, 1),
+('Kelvyn Dantas',	'kelvyndantas@hotmail.com', crypt('1234', gen_salt('bf', 12)), 150.50, 1),
 ('Ana Souza',       'ana.souza@email.com',        crypt('Ana#2025!',      gen_salt('bf', 12)), 120.50, 1),
 ('Bruno Almeida',   'bruno.almeida@email.com',   crypt('BrunoPass!9',    gen_salt('bf', 12)),   0.00,  2),
 ('Carla Mendes',    'carla.mendes@email.com',    crypt('C@rla2025',      gen_salt('bf', 12)),  45.00,  3),

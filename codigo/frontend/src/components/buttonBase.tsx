@@ -1,0 +1,1 @@
+export const btnBase = "header-btn-primary bg-blue-600/10 hover:!text-blue-100/90 hover:!bg-blue-400/20 active:!bg-blue-800/20";

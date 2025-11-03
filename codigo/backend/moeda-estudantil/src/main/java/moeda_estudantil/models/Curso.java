@@ -1,7 +1,5 @@
 package moeda_estudantil.models;
 
-import java.lang.classfile.Instruction;
-
 import jakarta.persistence.*;
 
 @Entity

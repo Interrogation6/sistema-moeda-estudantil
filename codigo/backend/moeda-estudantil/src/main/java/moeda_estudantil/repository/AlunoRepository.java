@@ -4,6 +4,7 @@ import moeda_estudantil.models.Aluno;
 import moeda_estudantil.views.AlunoView;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
          order by a.nome
          """)
   List<AlunoView> findAllView();
+
+  Optional<Aluno> findByEmailIgnoreCase(String email);
 }

@@ -4,7 +4,7 @@ import { useLogin } from '../hooks/useLogin';
 
 function Header() {
 
-    const { isLoggedIn, setIsLoggedIn } = useLogin();
+    const { isLoggedIn, logout, openLogin } = useLogin();
 
     const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
 
@@ -18,10 +18,14 @@ function Header() {
                     </nav>
                     {!isLoggedIn && (
                     <div className="flex-1 justify-center">
-                        <button className={`${btnBase}`}>Entrar</button>
-                        <span className='text-2xl text-blue-400/50'>/</span>
                         <button className={`${btnBase}`}
-                        onClick={() => setIsLoggedIn(true)}
+                        onClick={() => openLogin('signin')}
+                        >Entrar</button>
+
+                        <span className='text-2xl text-blue-400/50'>/</span>
+
+                        <button className={`${btnBase}`}
+                        onClick={() => openLogin('signup')}
                         >Cadastrar</button>
                     </div>
                     )}
@@ -31,7 +35,7 @@ function Header() {
                             <User size={24}/>
                         </div>
                         <button className="text-xl mx-2"
-                        onClick={() => setIsLoggedIn(false)}
+                        onClick={logout}
                         >Kelvyn</button>
                     </div>
                     )}
