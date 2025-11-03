@@ -3,12 +3,14 @@ import { User } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModalEnvioMoeda from './envioMoedaModal';
 
 function Header() {
 
     const { user, displayName, isLoggedIn, logout, openLogin } = useLogin();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [enviar, setEnviar] = useState(false);
 
     const btnBase = "header-btn-primary !bg-blue-800/10 hover:!text-blue-300 border border-transparent hover:border-current";
     const dropdownItem = "block w-full text-left px-6 py-3 text-base leading-5 hover:bg-white/5 focus:bg-white/10 focus:outline-none";
@@ -63,11 +65,12 @@ function Header() {
                                         navigate("/extrato");
                                         setIsMenuOpen(false);
                                     }}
-                                >R$ {user?.saldo ? user.saldo : "**.**"}</button>
+                                >Moedas: {user?.saldo ? user.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : "R$ **.**"}</button>
                                 <button
                                     role="menuitem"
                                     className={`${dropdownItem} border-b-1 border-white/10`}
                                     onClick={() => {
+                                        setEnviar(true);
                                         setIsMenuOpen(false);
                                     }}
                                 >Enviar Moedas</button>
@@ -83,9 +86,13 @@ function Header() {
                         </div>
                     )}
                 </div>
-                
             </header>
             <div style={{height: '2.5em'}}/>
+
+            {enviar && (
+                <ModalEnvioMoeda
+                    onClose={() => setEnviar(false)} />
+            )}
         </>
     )
 }
