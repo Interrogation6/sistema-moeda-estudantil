@@ -21,6 +21,12 @@ function AppContent() {
             <Header />
             {loginModalOpen && <LoginModal />}
             <div className="p-5 bg-zinc-700/80 rounded-3xl">
+                {tipo === "Aluno" &&
+                <h2 className="text-left font-bold px-5 pb-4 text-xl">Vantagens Disponíveis</h2>
+                }
+                {tipo === "Empresa" &&
+                <h2 className="text-left font-bold px-5 pb-4 text-xl">Lista de Vantagens</h2>
+                }
                 <div className="space-y-4 p-5 bg-gray-800/90 border rounded-2xl border-slate-600">
                     {tipo === "Aluno" &&
                         <TabelaVantagensAluno />

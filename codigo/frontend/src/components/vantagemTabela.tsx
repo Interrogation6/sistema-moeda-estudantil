@@ -96,7 +96,7 @@ export function TabelaVantagensAluno() {
                         <tr key={i} className="hover:bg-gray-700">
                             <td className="border-r border-gray-200/10 pl-4 text-left">{vantagem.nome}</td>
                             <td className="border-r border-gray-200/10">{vantagem.empresa}</td>
-                            <td className="border-r border-gray-200/10"></td>
+                            <td className="border-r border-gray-200/10">{vantagem.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                             <td>
                                 <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleAdd(vantagem.id)}>

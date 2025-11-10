@@ -19,7 +19,7 @@ function Header() {
         <>
             <header>
                 <div className="flex w-full mx-auto max-w-300 h-15">
-                    <nav className="flex-4 w-full justify-center">
+                    <nav className="flex-4 w-full justify-center cursor-pointer" onClick={() => navigate("/")}>
                         <img src={"/coin.png"} alt="Icone Moeda" className="icon" />
                         <h3>Sistema de Moeda Estudantil</h3>
                     </nav>
