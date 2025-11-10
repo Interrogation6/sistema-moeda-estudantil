@@ -5,16 +5,20 @@ import type { LoginResponse } from "../contexts/loginContext";
 export function LoginProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<LoginResponse | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hydrated, setHydrated] = useState<boolean>(false);
+  const [tipo, setTipo] = useState("");
 
   const login = useCallback((data: LoginResponse) => {
     localStorage.setItem("user", JSON.stringify(data));
     setUser(data);
     setIsLoggedIn(true);
+    setTipo(data.tipo);
   }, []);
   const logout = useCallback(() => {
     localStorage.removeItem("user");
     setUser(null);
     setIsLoggedIn(false);
+    setTipo("");
   }, []);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [intent, setIntent] = useState<AuthIntent>(null);
@@ -26,7 +30,9 @@ export function LoginProvider({ children }: Readonly<{ children: React.ReactNode
     if (saved) {
       setUser(JSON.parse(saved))
       setIsLoggedIn(true);
+      setTipo(JSON.parse(saved).tipo);
     };
+    setHydrated(true);
   }, []);
 
 
@@ -36,8 +42,8 @@ export function LoginProvider({ children }: Readonly<{ children: React.ReactNode
   }, [user]);
   
   const obj = useMemo(() => ({
-    user, isLoggedIn, setIsLoggedIn, displayName, login, logout, loginModalOpen, intent, openLogin, closeLogin
-  }), [user, isLoggedIn, displayName, login, loginModalOpen, intent]);
+    user, isLoggedIn, hydrated, tipo, setIsLoggedIn, displayName, login, logout, loginModalOpen, intent, openLogin, closeLogin
+  }), [user, isLoggedIn, hydrated, tipo, displayName, login, logout, loginModalOpen, intent]);
 
   return (
     <LoginContext.Provider value={obj}>

@@ -5,7 +5,10 @@ export type AuthIntent = 'signin' | 'signup' | null;
 export type LoginContextType = {
   user: LoginResponse | null;
   isLoggedIn: boolean;
+  // indica que o provider já carregou/validou o estado do login
+  hydrated: boolean;
   displayName: string;
+  tipo: string;
   setIsLoggedIn: (v: boolean) => void;
   login: (data: LoginResponse) => void;
   logout: () => void;
@@ -20,6 +23,7 @@ export type LoginResponse = {
   id: number;
   nome: string;
   email: string;
+  tipo: string;
   saldo: number;
   token: string;
 };

@@ -3,6 +3,7 @@ package moeda_estudantil.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import moeda_estudantil.models.Aluno;
@@ -18,11 +19,14 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
     @Autowired
     private CursoRepository cursoRepository;
+    @Autowired
+    private PasswordEncoder encoder;
 
     public Aluno create(AlunoDTO dto) {
         Aluno aluno = new Aluno();
         
-        aluno.setSenhaHash(dto.senha_hash());
+        if (dto.senha_hash() != null && !dto.senha_hash().isBlank())
+            aluno.setSenhaHash(encoder.encode(dto.senha_hash()));
         if (dto.nome() != null && !dto.nome().isBlank())
             aluno.setNome(dto.nome());
         if (dto.email() != null && !dto.email().isBlank())
@@ -82,6 +86,9 @@ public class AlunoService {
   if (dto.cursoId() != null) {
       var curso = cursoRepository.findById(dto.cursoId()).orElseThrow();
       aluno.setCurso(curso);
+  }
+  if (dto.senha_hash() != null) {
+      aluno.setSenhaHash(encoder.encode(dto.senha_hash()));
   }
   var s = alunoRepository.save(aluno);
   return new AlunoView(

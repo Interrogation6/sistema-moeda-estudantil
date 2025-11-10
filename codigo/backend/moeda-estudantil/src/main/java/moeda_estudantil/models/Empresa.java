@@ -1,5 +1,6 @@
 package moeda_estudantil.models;
 
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,9 +10,10 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private String login;
+    private String email;
     private String senha_hash;
-    private Long vantagem_id;
+    @OneToMany(mappedBy = "empresa", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Vantagem> vantagens;
 
     public Long getId() {
         return id;
@@ -25,11 +27,13 @@ public class Empresa {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    public String getLogin() {
-        return login;
+
+    public String getEmail() {
+        return email;
     }
-    public void setLogin(String login) {
-        this.login = login;
+
+    public void setEmail(String login) {
+        this.email = login;
     }
     public String getSenhaHash() {
         return senha_hash;
@@ -37,11 +41,23 @@ public class Empresa {
     public void setSenhaHash(String senha_hash) {
         this.senha_hash = senha_hash;
     }
-    public Long getVantagemId() {
-        return vantagem_id;
+
+    public void addVantagem(Vantagem v) {
+        if (v == null)
+            return;
+        if (!vantagens.contains(v)) {
+            vantagens.add(v);
+        }
+
+        v.setEmpresa(this);
+        v.setAtivo(true);
     }
-    public void setVantagemId(Long vantagem_id) {
-        this.vantagem_id = vantagem_id;
+
+    public void unlinkVantagem(Vantagem v) {
+        if (v == null)
+            return;
+        if (v.getEmpresa() == this && vantagens.remove(v)) {
+            v.setEmpresa(null);
+        }
     }
-    
 }

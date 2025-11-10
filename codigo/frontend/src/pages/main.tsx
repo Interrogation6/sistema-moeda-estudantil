@@ -5,6 +5,7 @@ import '../styles/index.css'
 //import Helloworld from './helloworld.tsx'
 import App from './app.tsx'
 import Extrato from './extrato.tsx'
+import GerenciarVantagens from './gerenciar-vantagens.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<App />} /> {/* Trocar */}
         <Route path="/admin/*" element={<App />} />
         <Route path="/extrato" element={<Extrato />} />
+        <Route path="/gerenciar-vantagens" element={<GerenciarVantagens />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

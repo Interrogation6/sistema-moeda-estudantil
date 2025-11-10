@@ -7,7 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import moeda_estudantil.models.Aluno;
+import moeda_estudantil.models.Empresa;
 import moeda_estudantil.repository.AlunoRepository;
+import moeda_estudantil.repository.EmpresaRepository;
 import moeda_estudantil.views.LoginDTO;
 import moeda_estudantil.views.LoginResponse;
 
@@ -19,23 +21,46 @@ public class AuthService {
     private AlunoRepository alunoRepository;
 
     @Autowired
+    private EmpresaRepository empresaRepository;
+
+    @Autowired
     private PasswordEncoder encoder;
 
     public LoginResponse login(@Validated LoginDTO dto) {
-        System.out.println("Tentando login com e-mail: " + dto.login());
-        Aluno aluno = alunoRepository.findByEmailIgnoreCase(dto.login())
-                .orElseThrow(() -> new SecurityException("Usuário não encontrado."));
+        final String email = dto.login();
+        final String senha = dto.senha();
 
-        if (!encoder.matches(dto.senha(), aluno.getSenhaHash())) {
-            throw new SecurityException("Senha incorreta.");
-        }
+        System.out.println("Tentando login com e-mail: " + email);
 
-        return new LoginResponse(
+        Aluno aluno = alunoRepository.findByEmailIgnoreCase(email)
+                .orElse(null);
+        if (aluno != null) {
+            if (!encoder.matches(senha, aluno.getSenhaHash())) {
+                throw new SecurityException("Senha incorreta. " + aluno.getSenhaHash() + " / " + senha);
+            }
+            return new LoginResponse(
                 aluno.getId(),
                 aluno.getNome(),
                 aluno.getEmail(),
-                "ALUNO", // TODO: adcionar professor e admin
+                    "Aluno",
                 aluno.getSaldo(),
                 "token-falso-temporario");
+        }
+        // Professor auth
+        Empresa empresa = empresaRepository.findByEmailIgnoreCase(email)
+                .orElse(null);
+        if (empresa != null) {
+            if (!encoder.matches(senha, empresa.getSenhaHash())) {
+                throw new SecurityException("Senha incorreta. " + senha);
+            }
+            return new LoginResponse(
+                    empresa.getId(),
+                    empresa.getNome(),
+                    empresa.getEmail(),
+                    "Empresa",
+                    null,
+                    "token-falso-temporario");
+        }
+        throw new SecurityException("Usuário não encontrado.");
     }
 }

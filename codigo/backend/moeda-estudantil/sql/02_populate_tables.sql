@@ -5,7 +5,7 @@ TRUNCATE TABLE instituicao RESTART IDENTITY CASCADE;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-INSERT INTO empresa (nome, login, senha_hash) VALUES
+INSERT INTO empresa (nome, email, senha_hash) VALUES
 ('Concert Tech', 'contato@concert.com.br',   crypt('Empresa#2025',    gen_salt('bf', 12))),
 ('Finesse Sportz', 'admin@finessesportz.com', crypt('Admin1234',       gen_salt('bf', 12))),
 ('Velvet Venture', 'hello@velvetventure.com', crypt('V3nture$ecure',   gen_salt('bf', 12))),

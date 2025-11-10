@@ -10,7 +10,7 @@ export function TabelaEmpresas() {
     type EmpresaItem = {
         id: number;
         nome: string;
-        login: string;
+        email: string;
     };
     const [empresas, setEmpresas] = useState<EmpresaItem[]>([]);
 
@@ -41,7 +41,7 @@ export function TabelaEmpresas() {
         setEmpresaSelecionada({
             id: 0,                  // id fictício, será ignorado no POST
             nome: "",
-            login: "",
+            email: "",
         });
         setModalOpen(true);
         setIsCreate(true);
@@ -127,7 +127,7 @@ export function TabelaEmpresas() {
                     {empresas.map((empresa, i) => (
                         <tr key={i} className="hover:bg-gray-700">
                             <td className="border-r border-gray-200/10 pl-4 text-left">{empresa.nome}</td>
-                            <td className="border-r border-gray-200/10">{empresa.login}</td>
+                            <td className="border-r border-gray-200/10">{empresa.email}</td>
                             <td className="border-r border-gray-200/10"></td>
                             <td>
                                 <button className="table-button me-1 mb-1 mt-1"

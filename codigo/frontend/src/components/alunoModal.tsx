@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-type AlunoItem = { id: number; nome: string; email: string; curso: string; instituicao: string; saldo: number; };
+type AlunoItem = { id: number; nome: string; email: string; curso: string; cursoId: number; instituicao: string; saldo: number; };
 type CursoItem = { id: number; nome: string; instituicao: string; };
-type FormAluno = { nome: string; email: string; cursoId: string; instituicaoNome: string; saldo: string; };
+type FormAluno = { nome: string; email: string; senha: string; cursoId: string; instituicaoNome: string; saldo: string; };
 type UpdateAlunoDTO = Partial<{nome: string; senha_hash: string; email: string; cursoId: number; saldo: number;}>;
 
 interface ModalEditarAlunoProps {
@@ -14,7 +14,7 @@ interface ModalEditarAlunoProps {
     onCreated?: (novoAluno: AlunoItem) => void;
 }
 
-export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onSaved, onCreated }: ModalEditarAlunoProps) {
+export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onSaved }: ModalEditarAlunoProps) {
     const formatBRL = (valor: number) =>
         valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -23,6 +23,7 @@ export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onS
     const [form, setForm] = useState<FormAluno>(() => ({
         nome: aluno?.nome ?? "",
         email: aluno?.email ?? "",
+        senha: "",
         cursoId: "" as string,
         instituicaoNome: "" as string,
         saldo: aluno ? formatBRL(aluno.saldo) : "",
@@ -85,6 +86,16 @@ export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onS
                             type="text"
                             value={form.email}
                             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                            className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-300 mb-1">Senha</label>
+                        <input
+                            type="text"
+                            value={form.senha}
+                            onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))}
+                            placeholder="********"
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -175,11 +186,20 @@ async function Salvar(
     const saldoNumber = Number(form.saldo.replace(/\D/g, "")) / 100;
     const cursoSel = cursos.find((c) => String(c.id) === form.cursoId);
 
-    const payload = buildPayloadParcial(aluno, form, cursoSel, isCreate);
+    const payload = buildPayloadParcial(aluno, form, cursoSel/* , isCreate */);
 
     if (Object.keys(payload).length === 0) {
         onClose(); // nada mudou
         return;
+    }
+    if (form.senha.length < 4) {
+        globalThis.alert("Senha possui deve possuir no minimo 4 caracteres.");
+        return;
+    }
+    if (form.senha && !isCreate) {
+        if (!globalThis.confirm("Campo 'Senha' possui valor. Aplicar alteração de senha?")) {
+            return;
+        }
     }
     try {
         let res;
@@ -217,17 +237,17 @@ function buildPayloadParcial(
   aluno: AlunoItem,
   form: FormAluno,
   cursoSel?: CursoItem,
-  isCreate?: boolean,
+    /* isCreate?: boolean, */
 ): UpdateAlunoDTO {
   const dto: UpdateAlunoDTO = {};
   const saldoNumber = Number(form.saldo.replace(/\D/g, "")) / 100;
 
   if (form.nome.trim() && form.nome !== aluno.nome) dto.nome = form.nome;
-  if (form.email?.trim() && form.email !== (aluno as any).email) dto.email = form.email; // se tiver email no AlunoItem
-  if (cursoSel && cursoSel.id !== (aluno as any).cursoId) dto.cursoId = cursoSel.id;
+    if (form.email?.trim() && form.email !== aluno.email) dto.email = form.email; // se tiver email no AlunoItem
+    if (form.senha.trim()) dto.senha_hash = form.senha;
+    if (cursoSel && cursoSel.id !== aluno.cursoId) dto.cursoId = cursoSel.id;
   if (!Number.isNaN(saldoNumber) && saldoNumber !== aluno.saldo) dto.saldo = saldoNumber;
   else dto.saldo = 0;
-  if (isCreate) dto.senha_hash = "1";
 
   return dto;
 }

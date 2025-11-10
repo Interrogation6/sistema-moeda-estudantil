@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-type EmpresaItem = { id: number; nome: string; login: string;};
-type FormEmpresa = { nome: string; login: string;};
+type EmpresaItem = { id: number; nome: string; email: string; };
+type FormEmpresa = { nome: string; email: string; senha: string; };
 type UpdateEmpresaDTO = Partial<{nome: string; login: string; senha_hash: string;}>;
 
 interface ModalEditarEmpresaProps {
@@ -13,11 +13,12 @@ interface ModalEditarEmpresaProps {
     onCreated?: (novaEmpresa: EmpresaItem) => void;
 }
 
-export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose, onSaved, onCreated }: ModalEditarEmpresaProps) {
+export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose, onSaved }: ModalEditarEmpresaProps) {
 
     const [form, setForm] = useState<FormEmpresa>(() => ({
         nome: empresa?.nome ?? "",
-        login: empresa?.login ?? "",
+        email: empresa?.email ?? "",
+        senha: "",
     }));
 
     useEffect(() => {
@@ -28,7 +29,7 @@ export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose,
             setForm(f => ({
                 ...f,
                 nome: empresa.nome,
-                login: empresa.login,
+                email: empresa.email,
             }));
         }
 
@@ -54,8 +55,18 @@ export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose,
                         <label className="block text-sm text-gray-300 mb-1">Login</label>
                         <input
                             type="text"
-                            value={form.login}
-                            onChange={(e) => setForm((f) => ({ ...f, login: e.target.value }))}
+                            value={form.email}
+                            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                            className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm text-gray-300 mb-1">Senha</label>
+                        <input
+                            type="text"
+                            value={form.senha}
+                            onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))}
+                            placeholder="********"
                             className="w-full rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -64,7 +75,7 @@ export default function ModalEditarEmpresa({ empresa, isCreate = false, onClose,
                 <div className="mt-6 flex justify-end gap-2">
                     <button className="table-button px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600" onClick={onClose}>Cancelar</button>
                     <button className="table-button px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
-                        disabled={!form.nome || !form.login}
+                        disabled={!form.nome || !form.email}
                     onClick={() => {if(!empresa) return;
                         Salvar(form, empresa, onSaved, onClose, isCreate)}}>Salvar</button>
                 </div>
@@ -86,11 +97,20 @@ async function Salvar(
     isCreate: boolean
 ) {
 
-    const payload = buildPayloadParcial(empresa, form, isCreate);
+    const payload = buildPayloadParcial(empresa, form/* , isCreate */);
 
     if (Object.keys(payload).length === 0) {
         onClose(); // nada mudou
         return;
+    }
+    if (form.senha.length < 4) {
+        globalThis.alert("Senha possui deve possuir no minimo 4 caracteres.");
+        return;
+    }
+    if (form.senha && !isCreate) {
+        if (!globalThis.confirm("Campo 'Senha' possui valor. Aplicar alteração de senha?")) {
+            return;
+        }
     }
     try {
         let res;
@@ -113,7 +133,7 @@ async function Salvar(
         const alunoAtualizado: EmpresaItem = {
             ...empresa,
             nome: form.nome,
-            login: empresa.login,
+            email: empresa.email,
         };
 
         onSaved(alunoAtualizado);
@@ -125,13 +145,13 @@ async function Salvar(
 function buildPayloadParcial(
   empresa: EmpresaItem,
   form: FormEmpresa,
-  isCreate?: boolean,
+    /* isCreate?: boolean, */
 ): UpdateEmpresaDTO {
   const dto: UpdateEmpresaDTO = {};
 
   if (form.nome.trim() && form.nome !== empresa.nome) dto.nome = form.nome;
-  if (form.login.trim() && form.login !== empresa.login) dto.login = form.login;
-  if (isCreate) dto.senha_hash = "1";
+    if (form.email.trim() && form.email !== empresa.email) dto.login = form.email;
+    if (form.senha.trim() && form.senha) dto.senha_hash = form.senha;
 
   return dto;
 }

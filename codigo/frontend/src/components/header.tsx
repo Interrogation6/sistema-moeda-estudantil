@@ -58,6 +58,8 @@ function Header() {
                                     isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-y-0 pointer-events-none",
                                 ].join(" ")}
                             >
+                                {user?.tipo === "Aluno" &&
+                                    <>
                                 <button
                                     role="menuitem"
                                     className={`${dropdownItem} py-5 border-b-1 border-white/10`}
@@ -65,15 +67,33 @@ function Header() {
                                         navigate("/extrato");
                                         setIsMenuOpen(false);
                                     }}
-                                >Moedas: {user?.saldo ? user.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : "R$ **.**"}</button>
+                                    >Moedas: <strong>{user?.saldo ? user.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : "R$ 0,00"}</strong></button>
                                 <button
+                                    role="menuitem"
+                                            className={`${dropdownItem} border-b-1 border-white/10`}
+                                            onClick={() => {
+                                                navigate("/gerenciar-vantagens");
+                                                setIsMenuOpen(false);
+                                            }}
+                                        >Vantagens</button>
+                                    </>
+                                }
+                                {user?.tipo === "Empresa" && <button
+                                    role="menuitem"
+                                    className={`${dropdownItem} py-5 border-b-1 border-white/10`}
+                                    onClick={() => {
+                                        navigate("/gerenciar-vantagens");
+                                        setIsMenuOpen(false);
+                                    }}
+                                >Gerenciar Vantagens</button>}
+                                {(user?.tipo === "Aluno" || user?.tipo === "Professor") && <button
                                     role="menuitem"
                                     className={`${dropdownItem} border-b-1 border-white/10`}
                                     onClick={() => {
                                         setEnviar(true);
                                         setIsMenuOpen(false);
                                     }}
-                                >Enviar Moedas</button>
+                                >Enviar Moedas</button>}
                                 <button
                                     role="menuitem"
                                     className={`${dropdownItem}`}
