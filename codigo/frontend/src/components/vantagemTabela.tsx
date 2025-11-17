@@ -142,11 +142,13 @@ function VantagemDetalhes({ item, onClose }: ExtratoProps) {
                         <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left  min-h-30">
                             {item?.descricao}</p>
                     </div>
-                    <div>
-                        <label className="block text-sm text-gray-300 mb-1">Imagem</label>
-                        <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
-                            {item?.imagem_path}</p>
-                    </div>
+                    {item?.imagem_path && <div>
+                        <img
+                                    src={item.imagem_path}
+                                    alt="Pré-visualização da imagem"
+                                    className="w-full max-h-100 object-contain"
+                                />
+                    </div>}
                     <div>
                         <label className="block text-sm text-gray-300 mb-1">Empresa</label>
                         <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
