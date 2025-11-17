@@ -1,16 +1,22 @@
 package moeda_estudantil.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import moeda_estudantil.models.Aluno;
+import moeda_estudantil.models.Vantagem;
 import moeda_estudantil.repository.AlunoRepository;
 import moeda_estudantil.repository.CursoRepository;
+import moeda_estudantil.repository.VantagemRepository;
 import moeda_estudantil.views.AlunoDTO;
 import moeda_estudantil.views.AlunoView;
+import moeda_estudantil.views.VantagemView;
 
 @Service
 public class AlunoService {
@@ -19,6 +25,8 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
     @Autowired
     private CursoRepository cursoRepository;
+    @Autowired
+    private VantagemRepository vantagemRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -70,7 +78,7 @@ public class AlunoService {
         /* newAluno.setInstituicaoId(aluno.getInstituicaoId()); */
         /* newAluno.setCursoId(aluno.getCursoId()); */
         newAluno.setSaldo(aluno.getSaldo());
-        newAluno.setVantagemId(aluno.getVantagemId());
+        newAluno.setVantagens(aluno.getVantagens());
 
         return alunoRepository.save(newAluno);
     }
@@ -98,5 +106,34 @@ public class AlunoService {
     s.getCurso().getNome(),
     s.getCurso().getInstituicao().getNome(),
     s.getSaldo());
+    }
+
+    @Transactional
+    public ResponseEntity<Void> reivindicarVantagem(Long alunoId, Long vantagemId) {
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        Vantagem vantagem = vantagemRepository.findById(vantagemId)
+                .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
+
+        boolean success = aluno.getVantagens().add(vantagem);
+        aluno.setSaldo(aluno.getSaldo() - vantagem.getValor());
+        if(success) {
+            alunoRepository.save(aluno);
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.status(409).build();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<VantagemView> getVantagens(Long alunoId) {
+
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        // Garantimos que o Hibernate ainda está dentro da transação
+        return alunoRepository.findVantagensById(alunoId).orElseThrow(() -> new RuntimeException("Erro ao carregar vantagens"));
     }
 }

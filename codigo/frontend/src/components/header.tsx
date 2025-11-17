@@ -80,12 +80,20 @@ function Header() {
                                 }
                                 {user?.tipo === "Empresa" && <button
                                     role="menuitem"
-                                    className={`${dropdownItem} border-b-1 border-white/10`}
+                                    className={`${dropdownItem} border-white/10`}
                                     onClick={() => {
                                         navigate("/gerenciar-vantagens");
                                         setIsMenuOpen(false);
                                     }}
                                 >Gerenciar Vantagens</button>}
+                                {user?.tipo === "Empresa" && <button
+                                    role="menuitem"
+                                    className={`${dropdownItem} border-b-1 border-white/10`}
+                                    onClick={() => {
+                                        navigate("/gerenciar-vantagens");
+                                        setIsMenuOpen(false);
+                                    }}
+                                >Gerenciar Pedidos</button>}
                                 {(user?.tipo === "Aluno" || user?.tipo === "Professor") && <button
                                     role="menuitem"
                                     className={`${dropdownItem} border-b-1 border-white/10`}

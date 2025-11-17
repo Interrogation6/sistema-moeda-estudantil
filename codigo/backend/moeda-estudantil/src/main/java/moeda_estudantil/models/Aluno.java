@@ -1,5 +1,7 @@
 package moeda_estudantil.models;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,7 +23,13 @@ public class Aluno {
     @JoinColumn(name = "curso_id")
     private Curso curso;
     private Double saldo;
-    private Long vantagem_id;
+    @ManyToMany
+    @JoinTable(
+        name = "aluno_vantagem",
+        joinColumns = @JoinColumn(name = "aluno_id"),
+        inverseJoinColumns = @JoinColumn(name = "vantagem_id")
+    )
+    private List<Vantagem> vantagens;
 
     public Long getId() {
         return id;
@@ -89,10 +97,10 @@ public class Aluno {
     public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
-    public Long getVantagemId() {
-        return vantagem_id;
+    public List<Vantagem> getVantagens() {
+        return vantagens;
     }
-    public void setVantagemId(Long vantagem_id) {
-        this.vantagem_id = vantagem_id;
+    public void setVantagens(List<Vantagem> vantagens) {
+        this.vantagens = vantagens;
     }
 }

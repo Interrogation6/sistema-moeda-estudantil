@@ -11,7 +11,7 @@ export function PainelTabelas() {
 
   const btnBase =
     "table-button inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors outline-none";
-  const active = "bg-blue-600 text-white";
+  const active = "!bg-blue-600/10 !text-white";
   const idle = "bg-transparent text-gray-300 hover:bg-white/10";
 
   return (

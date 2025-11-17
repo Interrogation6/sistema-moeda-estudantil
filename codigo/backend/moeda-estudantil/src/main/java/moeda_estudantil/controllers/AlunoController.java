@@ -6,6 +6,7 @@ import moeda_estudantil.models.Aluno;
 import moeda_estudantil.services.AlunoService;
 import moeda_estudantil.views.AlunoDTO;
 import moeda_estudantil.views.AlunoView;
+import moeda_estudantil.views.VantagemView;
 
 import java.util.List;
 
@@ -60,4 +61,16 @@ public class AlunoController {
         alunoService.remove(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{alunoId}/vantagens/{vantagemId}")
+    public ResponseEntity<Void> reivindicarVantagem(@PathVariable Long alunoId, @PathVariable Long vantagemId) {
+        
+        return alunoService.reivindicarVantagem(alunoId, vantagemId);
+    }
+
+    @GetMapping("/{alunoId}/vantagens")
+    public ResponseEntity<List<VantagemView>> getVantagens(@PathVariable Long alunoId) {
+        return ResponseEntity.ok(alunoService.getVantagens(alunoId));
+    }
+    
 }

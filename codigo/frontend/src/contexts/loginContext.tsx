@@ -4,6 +4,7 @@ export type AuthIntent = 'signin' | 'signup' | null;
 
 export type LoginContextType = {
   user: LoginResponse | null;
+  setUser: React.Dispatch<React.SetStateAction<LoginResponse | null>>;
   isLoggedIn: boolean;
   // indica que o provider já carregou/validou o estado do login
   hydrated: boolean;

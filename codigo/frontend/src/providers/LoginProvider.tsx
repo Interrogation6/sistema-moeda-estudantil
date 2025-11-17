@@ -42,8 +42,8 @@ export function LoginProvider({ children }: Readonly<{ children: React.ReactNode
   }, [user]);
   
   const obj = useMemo(() => ({
-    user, isLoggedIn, hydrated, tipo, setIsLoggedIn, displayName, login, logout, loginModalOpen, intent, openLogin, closeLogin
-  }), [user, isLoggedIn, hydrated, tipo, displayName, login, logout, loginModalOpen, intent]);
+    user, setUser, isLoggedIn, hydrated, tipo, setIsLoggedIn, displayName, login, logout, loginModalOpen, intent, openLogin, closeLogin
+  }), [user, setUser, isLoggedIn, hydrated, tipo, displayName, login, logout, loginModalOpen, intent]);
 
   return (
     <LoginContext.Provider value={obj}>

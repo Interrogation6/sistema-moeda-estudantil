@@ -5,16 +5,53 @@ import '../styles/table.css';
 import ModalVantagem, { type VantagemItem } from "./vantagemModal";
 import { useLogin } from "../hooks/useLogin";
 
-export function TabelaVantagensAluno() {
+type TabelaVantagensAlunoProps = {
+    view?: boolean;
+};
+
+type EmailParams = {
+    nome: string,
+    email: string,
+    codigo: string,
+    data: string,
+    valor: number
+};
+
+async function notifVantagem(emailParams: EmailParams) {
+    const r = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            service_id: 'service_k7s7am8',
+            template_id: 'template_hbjjocm',
+            user_id: 'HNOUx4jWE46zEj0J7', // Public Key
+            template_params: emailParams,
+        })
+    });
+
+    if (r.ok) {
+        console.log("Email enviado!");
+    } else {
+        const txt = await r.text();
+        console.error('Erro ao enviar email:', txt);
+    }
+};
+
+export function TabelaVantagensAluno({ view }: Readonly<TabelaVantagensAlunoProps>) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const [vantagens, setVantagens] = useState<VantagemItem[]>([]);
+    const { user, setUser } = useLogin();
 
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/vantagem/getAtivos");
+                let res;
+                if(view === true && user != null)
+                    res = await fetch("http://localhost:8080/aluno/" + user.id + "/vantagens");
+                else
+                    res = await fetch("http://localhost:8080/vantagem/getAtivos");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setVantagens(data);
@@ -38,9 +75,40 @@ export function TabelaVantagensAluno() {
         setInfoOpen(true);
     }
 
-    async function handleAdd(id: number) {
-        console.log(id);
+    async function handleAdd(vantagem: VantagemItem) {
+        if(user == null)
+            return;
+        if(user.saldo < vantagem.valor) {
+            alert("Saldo insuficiente para reivindicar esta vantagem.");
+            return;
+        }
+        if(!globalThis.confirm("Deseja reivindicar esta vantagem por " + vantagem.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + 
+        "? Seu novo saldo sera de: " + (user.saldo - vantagem.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })))
+        return;
+        try {
+            const res = await fetch(`http://localhost:8080/aluno/${user.id}/vantagens/${vantagem.id}`, {
+                method: "POST",
+            });
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        } catch (e) {
+            console.error("Erro ao reivindicar vantagem:", e);
+            alert("Não foi possível reivindicar vantagem. Tente novamente.");
+        }
+        setUser((prev) =>
+          prev
+            ? { ...prev, saldo: (user.saldo - vantagem.valor) }
+            : prev
+        );
+        notifVantagem({
+            nome: user.nome,
+            email: user.email,
+            codigo: vantagem.id.toString(),
+            data: new Date().toLocaleDateString(),
+            valor: vantagem.valor
+        });
     }
+
+    
 
     if (loading) {
         return (
@@ -98,10 +166,10 @@ export function TabelaVantagensAluno() {
                             <td className="border-r border-gray-200/10">{vantagem.empresa}</td>
                             <td className="border-r border-gray-200/10">{vantagem.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                             <td>
-                                <button className="table-button me-1 mb-1 mt-1"
-                                    onClick={() => handleAdd(vantagem.id)}>
+                                {!view && <button className="table-button me-1 mb-1 mt-1"
+                                    onClick={() => handleAdd(vantagem)}>
                                     <Plus size={26} />
-                                </button>
+                                </button>}
                                 <button className="table-button me-1 mb-1 mt-1"
                                     onClick={() => handleInfo(vantagem)}>
                                     <Info size={20} className="m-1" />

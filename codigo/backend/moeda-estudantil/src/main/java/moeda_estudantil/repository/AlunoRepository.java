@@ -2,6 +2,7 @@ package moeda_estudantil.repository;
 
 import moeda_estudantil.models.Aluno;
 import moeda_estudantil.views.AlunoView;
+import moeda_estudantil.views.VantagemView;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,23 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
   List<AlunoView> findAllView();
 
   Optional<Aluno> findByEmailIgnoreCase(String email);
+
+  //Long id, String nome, String empresa, String descricao, Double valor, Boolean ativo, String imagem_path
+  @Query("""
+       select new moeda_estudantil.views.VantagemView(
+         v.id,
+         v.nome,
+         e.nome,
+         v.descricao,
+         v.valor,
+         true,
+         v.imagem_path
+       )
+       from Aluno a
+       join a.vantagens v
+       join v.empresa e
+       where a.id = :alunoId
+       order by v.nome
+       """)
+  Optional<List<VantagemView>> findVantagensById(Long alunoId);
 }
