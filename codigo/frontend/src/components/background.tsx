@@ -40,7 +40,10 @@ export function Background() {
         fixed inset-0
         -z-10
         overflow-hidden
-        bg-slate-900/50
+        bg-linear-to-r
+        from-slate-900/40
+        via-slate-700/50
+        to-slate-900/40
       "
     >
       {bubbles.map((b) => (
