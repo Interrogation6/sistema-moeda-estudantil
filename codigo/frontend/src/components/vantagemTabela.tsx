@@ -143,6 +143,11 @@ function VantagemDetalhes({ item, onClose }: ExtratoProps) {
                             {item?.descricao}</p>
                     </div>
                     <div>
+                        <label className="block text-sm text-gray-300 mb-1">Imagem</label>
+                        <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
+                            {item?.imagem_path}</p>
+                    </div>
+                    <div>
                         <label className="block text-sm text-gray-300 mb-1">Empresa</label>
                         <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
                             {item?.empresa}</p>
@@ -197,19 +202,23 @@ export function TabelaVantagensEmpresa() {
     const [info, setInfo] = useState(false);
 
     function handleCreate() {
+        
         setVantagemSelecionada({
             id: 0,                  // id fictício, será ignorado no POST
             nome: "",
             descricao: "",
             valor: 0,
             empresa: user ? user.nome : "",
+            empresa_id: user ? user.id : 2,
             ativo: true,
+            imagem_path: "",
         });
+        console.log("user.id: " + (vantagemSelecionada ? vantagemSelecionada.empresa_id: ""));
         setModalOpen(true);
         setInfo(false);
     }
-    function handleInfo(empresa: VantagemItem) {
-        setVantagemSelecionada(empresa);
+    function handleInfo(vantagem: VantagemItem) {
+        setVantagemSelecionada(vantagem);
         setModalOpen(true);
         setInfo(true);
     }
@@ -262,7 +271,7 @@ export function TabelaVantagensEmpresa() {
     if (error) {
         return (
             <div className="error">
-                Erro ao carregar empresas: {error}
+                Erro ao carregar vantagens: {error}
             </div>
         );
     }

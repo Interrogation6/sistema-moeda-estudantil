@@ -4,5 +4,6 @@ public record VantagemDTO(
                 String nome,
                 String descricao,
                 Double valor,
-                Long empresa_id) {
+                Long empresa_id,
+                String imagem_path) {
 }

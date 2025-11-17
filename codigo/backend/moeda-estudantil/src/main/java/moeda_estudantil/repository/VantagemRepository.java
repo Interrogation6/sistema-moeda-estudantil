@@ -17,7 +17,8 @@ public interface VantagemRepository extends JpaRepository<Vantagem, Long> {
                         e.nome,
                         v.descricao,
                         v.valor,
-                        v.ativo
+                        v.ativo,
+                        v.imagem_path
                         )
                         from Vantagem v
                         join v.empresa e
@@ -32,7 +33,8 @@ public interface VantagemRepository extends JpaRepository<Vantagem, Long> {
                         e.nome,
                         v.descricao,
                         v.valor,
-                        v.ativo
+                        v.ativo,
+                        v.imagem_path
                         )
                         from Vantagem v
                         join v.empresa e

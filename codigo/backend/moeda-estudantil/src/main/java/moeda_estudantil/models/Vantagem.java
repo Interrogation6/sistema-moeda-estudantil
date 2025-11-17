@@ -16,6 +16,15 @@ public class Vantagem {
     private String descricao;
     private boolean ativo;
     private double valor;
+    private String imagem_path;
+
+    public String getImagemPath() {
+        return imagem_path;
+    }
+
+    public void setImagemPath(String imagem_path) {
+        this.imagem_path = imagem_path;
+    }
 
     public boolean setEmpresa(Empresa empresa) {
         if (empresa == null)

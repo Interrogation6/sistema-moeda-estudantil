@@ -80,7 +80,7 @@ function Header() {
                                 }
                                 {user?.tipo === "Empresa" && <button
                                     role="menuitem"
-                                    className={`${dropdownItem} py-5 border-b-1 border-white/10`}
+                                    className={`${dropdownItem} border-b-1 border-white/10`}
                                     onClick={() => {
                                         navigate("/gerenciar-vantagens");
                                         setIsMenuOpen(false);

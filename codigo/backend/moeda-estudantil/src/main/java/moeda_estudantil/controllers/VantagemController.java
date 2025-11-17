@@ -2,7 +2,6 @@ package moeda_estudantil.controllers;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import moeda_estudantil.services.VantagemService;
 import moeda_estudantil.views.VantagemDTO;
 import moeda_estudantil.views.VantagemView;
-
-import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController

@@ -31,6 +31,7 @@ public class VantagemService {
         vantagem.setDescricao(dto.descricao());
         vantagem.setValor(dto.valor());
         vantagem.setAtivo(true);
+        vantagem.setImagemPath(dto.imagem_path());
 
         if (dto.empresa_id() != null) {
             Empresa empresa = empresaRepository.findById(dto.empresa_id())
