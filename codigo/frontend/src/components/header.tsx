@@ -25,15 +25,15 @@ function Header() {
                     </nav>
                     {!isLoggedIn && (
                     <div className="flex-1 justify-center">
-                        <button className={`${btnBase}`}
+                        <button className={`${btnBase} h-10`}
                         onClick={() => openLogin('signin')}
                         >Entrar</button>
 
-                        <span className='text-2xl text-blue-400/50'>/</span>
+                        {/* <span className='text-2xl text-blue-400/50'>/</span>
 
                         <button className={`${btnBase}`}
                         onClick={() => openLogin('signup')}
-                        >Cadastrar</button>
+                        >Cadastrar</button> */}
                     </div>
                     )}
                     {isLoggedIn && (
