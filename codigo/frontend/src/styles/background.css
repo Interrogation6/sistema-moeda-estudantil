@@ -1,6 +1,6 @@
 @keyframes float-up {
   0% {
-    transform: translateY(25vh) rotate(0deg);
+    transform: translateY(100%) rotate(0deg);
     opacity: 1;
   }
   10% {
