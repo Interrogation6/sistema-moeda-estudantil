@@ -12,6 +12,9 @@ type TabelaVantagensAlunoProps = {
 type EmailParams = {
     nome: string,
     email: string,
+    imagem_url: string,
+    vantagem_nome: string,
+    vantagem_empresa: string,
     codigo: string,
     data: string,
     valor: number
@@ -22,9 +25,9 @@ async function notifVantagem(emailParams: EmailParams) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            service_id: 'service_k7s7am8',
-            template_id: 'template_hbjjocm',
-            user_id: 'HNOUx4jWE46zEj0J7', // Public Key
+            service_id: 'service_gmkxg7x',
+            template_id: 'template_wkj18za',
+            user_id: 'apLVTJC8enCuoWJkb', // Public Key
             template_params: emailParams,
         })
     });
@@ -99,10 +102,24 @@ export function TabelaVantagensAluno({ view }: Readonly<TabelaVantagensAlunoProp
             ? { ...prev, saldo: (user.saldo - vantagem.valor) }
             : prev
         );
+        console.log("vai!");
         notifVantagem({
             nome: user.nome,
-            email: user.email,
+            email: "kelvyndantas@hotmail.com",
             codigo: vantagem.id.toString(),
+            vantagem_nome: vantagem.nome,
+            vantagem_empresa: vantagem.empresa,
+            imagem_url: vantagem.imagem_path || "",
+            data: new Date().toLocaleDateString(),
+            valor: vantagem.valor
+        });
+        notifVantagem({
+            nome: vantagem.empresa,
+            email: "kelvyndantas@hotmail.com",
+            codigo: vantagem.id.toString(),
+            vantagem_nome: vantagem.nome,
+            vantagem_empresa: vantagem.empresa,
+            imagem_url: vantagem.imagem_path || "",
             data: new Date().toLocaleDateString(),
             valor: vantagem.valor
         });

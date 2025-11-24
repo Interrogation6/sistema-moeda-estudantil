@@ -6,6 +6,18 @@ estudantil através de uma moeda virtual. Essa moeda pode ser distribuída por
 professores aos seus alunos e trocada pelos alunos por produtos e descontos em
 empresas parceiras
 
+##Tecnologias Usadas
+
+###Java Springboot
+
+###Jakarta
+
+###Vite
+
+###TailwindCSS
+
+###React
+
 ## Artefatos e Documentações
 [Documentação Geral - Miro](https://miro.com/app/board/uXjVJ-4N0GE=/)
 
