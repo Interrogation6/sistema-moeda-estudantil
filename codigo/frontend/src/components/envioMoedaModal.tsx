@@ -10,7 +10,7 @@ export default function ModalEnvioMoeda({ onClose }: { onClose: () => void }) {
     }));
 
     const [centavos, setCentavos] = useState(0);
-    const displayQuantia = form.quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    //const displayQuantia = form.quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const raw = e.target.value.replaceAll(/\D/g, "");

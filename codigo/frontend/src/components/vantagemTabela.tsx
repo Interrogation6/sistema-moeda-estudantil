@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Info, Plus, X, ArrowDown, ArrowUp } from "lucide-react";
+import QRCode from "qrcode";
 
 import '../styles/table.css';
 import ModalVantagem, { type VantagemItem } from "./vantagemModal";
@@ -21,16 +22,27 @@ type EmailParams = {
 };
 
 async function notifVantagem(emailParams: EmailParams) {
-    const r = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            service_id: 'service_gmkxg7x',
-            template_id: 'template_wkj18za',
-            user_id: 'apLVTJC8enCuoWJkb', // Public Key
-            template_params: emailParams,
-        })
-    });
+    const claimUrl = `https://177.182.7.111:3000/vantagem/${emailParams.codigo}`;
+
+    const qrCodeDataUrl = await QRCode.toDataURL(claimUrl, {
+    width: 256,
+    margin: 1,
+  });
+
+    const r = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      service_id: "service_k7s7am8",
+      template_id: "template_hbjjocm",
+      user_id: "HNOUx4jWE46zEj0J7", // Public Key
+      template_params: {
+        ...emailParams,
+        qr_code: qrCodeDataUrl, // <-- new param
+        claim_url: claimUrl,    // optional: also send the URL in text
+      },
+    }),
+  });
 
     if (r.ok) {
         console.log("Email enviado!");
