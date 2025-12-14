@@ -192,13 +192,20 @@ async function Salvar(
         onClose(); // nada mudou
         return;
     }
-    if (form.senha.length < 4) {
-        globalThis.alert("Senha possui deve possuir no minimo 4 caracteres.");
-        return;
-    }
-    if (form.senha && !isCreate) {
-        if (!globalThis.confirm("Campo 'Senha' possui valor. Aplicar alteração de senha?")) {
+    if (isCreate) {
+        if (!form.senha || form.senha.length < 4) {
+            globalThis.alert("Senha deve possuir no mínimo 4 caracteres.");
             return;
+        }
+    } else {
+        if (form.senha && form.senha.length < 4) {
+            globalThis.alert("Senha deve possuir no mínimo 4 caracteres.");
+            return;
+        }
+        if (form.senha) {
+            if (!globalThis.confirm("Campo 'Senha' possui valor. Aplicar alteração de senha?")) {
+                return;
+            }
         }
     }
     try {
