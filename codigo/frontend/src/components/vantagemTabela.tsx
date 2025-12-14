@@ -22,7 +22,8 @@ type EmailParams = {
 };
 
 async function notifVantagem(emailParams: EmailParams) {
-    const claimUrl = `https://177.182.7.111:3000/vantagem/${emailParams.codigo}`;
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "https://177.182.7.111:3000";
+    const claimUrl = baseUrl + `/vantagem/${emailParams.codigo}`;
 
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?` +
     `size=256x256&data=${encodeURIComponent(claimUrl)}`;

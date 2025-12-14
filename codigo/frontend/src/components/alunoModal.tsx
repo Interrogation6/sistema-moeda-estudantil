@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-type AlunoItem = { id: number; nome: string; email: string; curso: string; cursoId: number; instituicao: string; saldo: number; };
+type AlunoItem = { id: number; nome: string; email: string; curso: string; cursoId?: number; instituicao: string; saldo: number; };
 type CursoItem = { id: number; nome: string; instituicao: string; };
 type FormAluno = { nome: string; email: string; senha: string; cursoId: string; instituicaoNome: string; saldo: string; };
 type UpdateAlunoDTO = Partial<{nome: string; senha_hash: string; email: string; cursoId: number; saldo: number;}>;

@@ -183,7 +183,3 @@ function buildPayloadParcial(
 
     return dto;
 }
-
-function uploadImage(file: File) {
-    return "feito";
-}
