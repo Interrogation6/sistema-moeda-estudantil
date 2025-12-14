@@ -3,6 +3,7 @@ import { Pencil, Trash2, Plus} from "lucide-react";
 import ModalEditarAluno from "./alunoModal";
 
 import '../styles/table.css';
+import { baseUrl } from "../Params";
 
 export function ListaAluno() {
     const [ids, setIds] = useState<number[]>([]);
@@ -12,7 +13,7 @@ export function ListaAluno() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/getListaAlunos");
+                const res = await fetch(baseUrl + "/getListaAlunos");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data: number[] = await res.json();
                 setIds(data);
@@ -62,7 +63,7 @@ export function TabelaAlunos() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/aluno/getAll");
+                const res = await fetch(baseUrl + "/aluno/getAll");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setAlunos(data);
@@ -109,7 +110,7 @@ export function TabelaAlunos() {
         if (!ok) return;
         try {
             setDeletingId(id);
-            const res = await fetch(`http://localhost:8080/aluno/${id}`, {
+            const res = await fetch(baseUrl + `/aluno/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

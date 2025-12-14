@@ -4,6 +4,7 @@ import { Info } from "lucide-react";
 import '../styles/table.css';
 import { useLogin } from "../hooks/useLogin";
 import { X } from "lucide-react"
+import { baseUrl } from "../Params";
 
 export function ListaExtrato() {
     const { user } = useLogin();
@@ -82,7 +83,7 @@ export function TabelaExtrato() {
             }
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:8080/aluno/${user.id}/extratos`);
+                const res = await fetch(baseUrl + `/aluno/${user.id}/extratos`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 if (!mounted) return;

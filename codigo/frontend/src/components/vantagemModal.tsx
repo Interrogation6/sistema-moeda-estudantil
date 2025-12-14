@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { baseUrl } from "../Params";
 
 export type VantagemItem = { id: number; nome: string; descricao: string; empresa: string; empresa_id: number; valor: number; ativo: boolean; imagem_path: string; };
 type FormVantagem = { nome: string; descricao: string; valor: string; imagem_path?: string; };
@@ -141,7 +142,7 @@ async function Salvar(
         return;
     }
     try {
-        const res = await fetch(`http://localhost:8080/vantagem`, {
+        const res = await fetch(baseUrl + `/vantagem`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),

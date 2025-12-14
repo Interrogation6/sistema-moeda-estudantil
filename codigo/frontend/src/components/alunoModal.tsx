@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { baseUrl } from "../Params";
 
 type AlunoItem = { id: number; nome: string; email: string; curso: string; cursoId?: number; instituicao: string; saldo: number; };
 type CursoItem = { id: number; nome: string; instituicao: string; };
@@ -31,7 +32,7 @@ export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onS
 
     useEffect(() => {
         async function fetchLookups() {
-            const resCursos = await fetch("http://localhost:8080/curso/getAll")
+            const resCursos = await fetch(baseUrl + "/curso/getAll")
 
             const data: CursoItem[] = await resCursos.json();
             setCursos(data);
@@ -211,13 +212,13 @@ async function Salvar(
     try {
         let res;
         if(isCreate){
-            res = await fetch(`http://localhost:8080/aluno`, {
+            res = await fetch(baseUrl + `/aluno`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         });
         } else {
-            res = await fetch(`http://localhost:8080/aluno/${aluno.id}`, {
+            res = await fetch(baseUrl + `/aluno/${aluno.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),

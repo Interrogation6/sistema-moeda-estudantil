@@ -4,6 +4,7 @@ import { Info, Plus, X, ArrowDown, ArrowUp } from "lucide-react";
 import '../styles/table.css';
 import ModalVantagem, { type VantagemItem } from "./vantagemModal";
 import { useLogin } from "../hooks/useLogin";
+import { baseUrl } from "../Params";
 
 type TabelaVantagensAlunoProps = {
     view?: boolean;
@@ -22,7 +23,6 @@ type EmailParams = {
 };
 
 async function notifVantagem(emailParams: EmailParams) {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || "https://177.182.7.111:3000";
     const claimUrl = baseUrl + `/vantagem/${emailParams.codigo}`;
 
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?` +
@@ -63,9 +63,9 @@ export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensA
             try {
                 let res;
                 if(view === true && user != null)
-                    res = await fetch("http://localhost:8080/aluno/" + user.id + "/vantagens");
+                    res = await fetch(baseUrl + "/aluno/" + user.id + "/vantagens");
                 else
-                    res = await fetch("http://localhost:8080/vantagem/getAtivos");
+                    res = await fetch(baseUrl + "/vantagem/getAtivos");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setVantagens(data);
@@ -100,7 +100,7 @@ export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensA
         "? Seu novo saldo sera de: " + (user.saldo - vantagem.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })))
         return;
         try {
-            const res = await fetch(`http://localhost:8080/aluno/${user.id}/vantagens/${vantagem.id}`, {
+            const res = await fetch(baseUrl + `/aluno/${user.id}/vantagens/${vantagem.id}`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -289,7 +289,7 @@ export function TabelaVantagensEmpresa() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/vantagem/getAll/" + (user ? user.id : 0));
+                const res = await fetch(baseUrl + "/vantagem/getAll/" + (user ? user.id : 0));
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setVantagens(data);
@@ -339,7 +339,7 @@ export function TabelaVantagensEmpresa() {
         const ok = globalThis.confirm("Tem certeza que deseja inativar esta vantagem?");
         if (!ok) return;
         try {
-            const res = await fetch(`http://localhost:8080/vantagem/${id}`, {
+            const res = await fetch(baseUrl + `/vantagem/${id}`, {
                 method: "PATCH",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

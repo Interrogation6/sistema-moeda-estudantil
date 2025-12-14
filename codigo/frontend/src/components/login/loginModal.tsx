@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useLogin } from "../../hooks/useLogin";
 import { btnBase } from "../buttonBase";
 import type { LoginResponse } from "../../contexts/loginContext";
+import { baseUrl } from "../../Params";
 
 export default function LoginModal() {
     //const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function LoginModal() {
 
         try {
 
-            const res = await fetch("http://localhost:8080/auth", {
+            const res = await fetch(baseUrl + "/auth", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ login: email, senha }),

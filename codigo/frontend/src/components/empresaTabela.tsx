@@ -3,6 +3,7 @@ import { Pencil, Trash2, Plus} from "lucide-react";
 import ModalEditarEmpresa from "./empresaModal";
 
 import '../styles/table.css';
+import { baseUrl } from "../Params";
 
 export function TabelaEmpresas() {
     const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ export function TabelaEmpresas() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch("http://localhost:8080/empresa/getAll");
+                const res = await fetch(baseUrl + "/empresa/getAll");
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setEmpresas(data);
@@ -60,7 +61,7 @@ export function TabelaEmpresas() {
         if (!ok) return;
         try {
             setDeletingId(id);
-            const res = await fetch(`http://localhost:8080/empresa/${id}`, {
+            const res = await fetch(baseUrl + `/empresa/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

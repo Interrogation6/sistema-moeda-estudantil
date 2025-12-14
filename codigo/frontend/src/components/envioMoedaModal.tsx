@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLogin } from "../hooks/useLogin";
+import { baseUrl } from "../Params";
 
 
 type FormEnvio = { destino: string; quantia: number; detalhes: string; };
@@ -44,7 +45,7 @@ export default function ModalEnvioMoeda({ onClose }: { onClose: () => void }) {
         let mounted = true;
         async function fetchAlunos() {
             try {
-                const res = await fetch('http://localhost:8080/aluno/getAll');
+                const res = await fetch(baseUrl + '/aluno/getAll');
                 if (!res.ok) return;
                 const data = await res.json();
                 if (!mounted) return;
@@ -107,7 +108,7 @@ export default function ModalEnvioMoeda({ onClose }: { onClose: () => void }) {
                                     const remetenteId = user.id;
                                     const destinatarioId = Number(form.destino);
                                     const valorCentavos = Number(form.quantia);
-                                    const res = await fetch(`http://localhost:8080/aluno/${remetenteId}/enviar/${valorCentavos}/${destinatarioId}`, {
+                                    const res = await fetch(baseUrl + `/aluno/${remetenteId}/enviar/${valorCentavos}/${destinatarioId}`, {
                                         method: 'POST'
                                     });
                                     if (res.status === 204) {
