@@ -1,6 +1,7 @@
 package moeda_estudantil.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Value("${auth.token.placeholder:token-falso-temporario}")
+    private String placeholderToken;
+
     public LoginResponse login(@Validated LoginDTO dto) {
         final String email = dto.login();
         final String senha = dto.senha();
@@ -44,7 +48,7 @@ public class AuthService {
                 aluno.getEmail(),
                     "Aluno",
                 aluno.getSaldo(),
-                "token-falso-temporario");
+                placeholderToken);
         }
         // Professor auth
         Empresa empresa = empresaRepository.findByEmailIgnoreCase(email)
@@ -53,13 +57,13 @@ public class AuthService {
             if (!encoder.matches(senha, empresa.getSenhaHash())) {
                 throw new SecurityException("Senha incorreta. " + senha);
             }
-            return new LoginResponse(
+                return new LoginResponse(
                     empresa.getId(),
                     empresa.getNome(),
                     empresa.getEmail(),
                     "Empresa",
                     null,
-                    "token-falso-temporario");
+                    placeholderToken);
         }
         throw new SecurityException("Usuário não encontrado.");
     }
