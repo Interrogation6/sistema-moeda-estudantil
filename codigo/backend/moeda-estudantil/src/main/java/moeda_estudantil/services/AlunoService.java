@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import moeda_estudantil.models.Aluno;
+import moeda_estudantil.models.Extrato;
 import moeda_estudantil.models.Vantagem;
 import moeda_estudantil.repository.AlunoRepository;
 import moeda_estudantil.repository.CursoRepository;
@@ -27,6 +28,8 @@ public class AlunoService {
     private CursoRepository cursoRepository;
     @Autowired
     private VantagemRepository vantagemRepository;
+    @Autowired
+    private moeda_estudantil.repository.ExtratoRepository extratoRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -120,6 +123,20 @@ public class AlunoService {
         aluno.setSaldo(aluno.getSaldo() - vantagem.getValor());
         if(success) {
             alunoRepository.save(aluno);
+
+            // registrar extrato da reivindicação (remetente = aluno, destinatario = null)
+            try {
+                moeda_estudantil.models.Extrato ex = new moeda_estudantil.models.Extrato();
+                ex.setRemetente(aluno);
+                ex.setDestinatario(null);
+                ex.setValor(-vantagem.getValor());
+                ex.setVantagem(vantagem);
+                extratoRepository.save(ex);
+            } catch (Exception exx) {
+                // não impedir a reivindicação caso registro de extrato falhe, apenas logar
+                System.err.println("Erro ao salvar extrato de reivindicação: " + exx.getMessage());
+            }
+
             return ResponseEntity.noContent().build();
         }
         else {
@@ -135,5 +152,44 @@ public class AlunoService {
 
         // Garantimos que o Hibernate ainda está dentro da transação
         return alunoRepository.findVantagensById(alunoId).orElseThrow(() -> new RuntimeException("Erro ao carregar vantagens"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<moeda_estudantil.models.Extrato> getExtratos(Long alunoId) {
+        // retorna extratos onde o aluno é remetente ou destinatário
+        return extratoRepository.findByRemetenteIdOrDestinatarioIdOrderByDataHoraDesc(alunoId, alunoId);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> enviarMoeda(Long remetenteId, Long destinatarioId, Long valorCentavos) {
+        Aluno remetente = alunoRepository.findById(remetenteId)
+                .orElseThrow(() -> new RuntimeException("Remetente não encontrado"));
+        Aluno destinatario = alunoRepository.findById(destinatarioId)
+                .orElseThrow(() -> new RuntimeException("Destinatário não encontrado"));
+
+        double valor = (valorCentavos == null) ? 0.0 : (valorCentavos.doubleValue() / 100.0);
+
+        Double saldoRem = remetente.getSaldo();
+        if (saldoRem == null) saldoRem = 0.0;
+        if (saldoRem < valor) {
+            return ResponseEntity.status(409).build(); // saldo insuficiente
+        }
+
+        remetente.setSaldo(saldoRem - valor);
+        Double saldoDest = destinatario.getSaldo();
+        if (saldoDest == null) saldoDest = 0.0;
+        destinatario.setSaldo(saldoDest + valor);
+
+        alunoRepository.save(remetente);
+        alunoRepository.save(destinatario);
+
+        Extrato ex = new Extrato();
+        ex.setRemetente(remetente);
+        ex.setDestinatario(destinatario);
+        ex.setValor(valor);
+        ex.setVantagem(null);
+        extratoRepository.save(ex);
+
+        return ResponseEntity.noContent().build();
     }
 }

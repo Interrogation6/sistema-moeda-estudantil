@@ -72,5 +72,15 @@ public class AlunoController {
     public ResponseEntity<List<VantagemView>> getVantagens(@PathVariable Long alunoId) {
         return ResponseEntity.ok(alunoService.getVantagens(alunoId));
     }
+
+    @GetMapping("/{alunoId}/extratos")
+    public ResponseEntity<java.util.List<moeda_estudantil.models.Extrato>> getExtratos(@PathVariable Long alunoId) {
+        return ResponseEntity.ok(alunoService.getExtratos(alunoId));
+    }
+
+    @PostMapping("/{remetenteId}/enviar/{valor}/{destinatarioId}")
+    public ResponseEntity<Void> enviar(@PathVariable Long remetenteId, @PathVariable Long valor, @PathVariable Long destinatarioId) {
+        return alunoService.enviarMoeda(remetenteId, destinatarioId, valor);
+    }
     
 }

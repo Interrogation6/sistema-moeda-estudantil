@@ -28,18 +28,21 @@ export function ListaExtrato() {
     );
 }
 export type ExtratoItem = {
-    resumo: string;
-    detalhes: string;
-    quantia: number;
-    data: Date;
+    id?: number;
+    remetente?: { id: number; nome: string } | null;
+    destinatario?: { id: number; nome: string } | null;
+    valor: number;
+    dataHora?: string | null; // ISO string from backend
+    vantagem?: { id?: number; nome: string; descricao?: string } | null;
 };
 
 export function TabelaExtrato() {
     const { user } = useLogin();
     const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error/* , setError */] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [itemSelecionado, setItemSelecionado] = useState<ExtratoItem | null>(null);
+    const [extrato, setExtrato] = useState<ExtratoItem[]>([]);
 
 
     function viewDetalhes(item: ExtratoItem) {
@@ -47,36 +50,58 @@ export function TabelaExtrato() {
         setModalOpen(true);
     }
 
+    function formatExtratoDisplay(e: ExtratoItem) {
+        const vant = e.vantagem;
+        const remet = e.remetente;
+        const dest = e.destinatario;
+        let resumo = '';
+        if (vant) resumo = `Reivindicou vantagem: ${vant.nome}`;
+        else if (remet && dest) {
+            if (user && remet.id === user.id) resumo = `Envio para ${dest.nome}`;
+            else resumo = `Recebido de ${remet.nome}`;
+        } else if (remet) resumo = `Operação: ${remet.nome}`;
+        else resumo = '';
+
+        const detalhes = vant?.descricao ?? (vant ? vant.nome : `${remet?.nome ?? ''} -> ${dest?.nome ?? ''}`) ?? '';
+        const quantia = Number(e.valor ?? 0);
+        const date = e.dataHora ? new Date(e.dataHora) : new Date();
+        return { resumo, detalhes, quantia, date } as const;
+    }
 
 
-    const [extrato] = useState<ExtratoItem[]>([
-        {
-            resumo: "Trabalho concluido acima de expectativas",
-            detalhes: "Obteve nota máxima no Trabalho Interdisciplinar: Aplicações Web",
-            quantia: 150,
-            data: new Date("2025-11-03"),
-        },
-        {
-            resumo: "Reinvindicado vantagem: Uber",
-            detalhes: "Reinvidicou cupom de vantagem 'Uber desconto 60%'",
-            quantia: -45.0,
-            data: new Date("2025-11-02"),
-        },
-        {
-            resumo: "Reinvindicado vantagem: Almoco",
-            detalhes: "Reinvidicou cupom de vantagem 'Prato feito R$9,99 cantina PUC-MINAS Coração Eucarístico'",
-            quantia: -90.0,
-            data: new Date("2025-11-01"),
-        },
-    ]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000); // 1000 ms = 1 segundo
+        let mounted = true;
+        async function load() {
+            if (!user) {
+                if (mounted) {
+                    setExtrato([]);
+                    setLoading(false);
+                }
+                return;
+            }
+            setLoading(true);
+            try {
+                const res = await fetch(`http://localhost:8080/aluno/${user.id}/extratos`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                if (!mounted) return;
 
-        return () => clearTimeout(timer); // limpa o timer se o componente desmontar
-    }, []);
+                const items: ExtratoItem[] = Array.isArray(data) ? data : [];
+                setExtrato(items);
+                setLoading(false);
+            } catch (err: unknown) {
+                console.error('Erro ao carregar extrato', err);
+                if (mounted) {
+                    const message = err instanceof Error ? err.message : String(err);
+                    setError(message);
+                    setLoading(false);
+                }
+            }
+        }
+        load();
+        return () => { mounted = false; };
+    }, [user]);
     if (loading) {
         return (
             <div className="flex items-center justify-center gap-3 text-gray-400">
@@ -127,22 +152,27 @@ export function TabelaExtrato() {
       [&>tr:nth-child(odd)>td]:bg-gray-500/10
       [&>tr:nth-child(even)>td]:bg-gray-500/0
     ">
-                    {extrato.map((entry, i) => (
-                        <tr key={i} className="hover:bg-gray-700">
-                            <td className="border-r border-gray-200/10 pl-4 text-left">{entry.resumo}</td>
-                            <td className="border-r border-gray-200/10">{entry.quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                            <td className="border-r border-gray-200/10">{entry.data.toLocaleDateString("pt-BR")}</td>
-                            <td>
-                                <button className="table-button me-1 mb-1 mt-1"
-                                    onClick={() => viewDetalhes(entry)}>
-                                    <Info size={20} className="m-1" />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {extrato.map((entry, i) => {
+                        const d = formatExtratoDisplay(entry);
+                        return (
+                            <tr key={i} className="hover:bg-gray-700">
+                                <td className="border-r border-gray-200/10 pl-4 text-center">{d.resumo}</td>
+                                <td className="border-r border-gray-200/10">{d.quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                <td className="border-r border-gray-200/10">{d.date.toLocaleDateString("pt-BR")}</td>
+                                <td>
+                                    <button className="table-button me-1 mb-1 mt-1"
+                                        onClick={() => viewDetalhes(entry)}>
+                                        <Info size={20} className="m-1" />
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })}
                     <tr key="100">
+                        <td className="border-r border-gray-200/10 font-bold">Saldo Atual: </td>
+                        <td className="border-r border-gray-200/10 font-bold">{user?.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                         <td className="border-r border-gray-200/10"></td>
-                        <td className="border-r border-gray-200/10 font-bold">Saldo Atual: {user?.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -161,31 +191,45 @@ interface ExtratoProps {
     onClose: () => void;
 }
 function ExtratoDetalhes({ item, onClose }: ExtratoProps) {
+    function formatExtratoDisplayLocal(e: ExtratoItem) {
+        const vant = e.vantagem;
+        const remet = e.remetente;
+        const dest = e.destinatario;
+        let resumo = '';
+        if (vant) resumo = `Reivindicou vantagem: ${vant.nome}`;
+        else if (remet && dest) {
+            resumo = `Operação: ${remet.nome} -> ${dest.nome}`;
+        } else if (remet) resumo = `Operação: ${remet.nome}`;
+        const detalhes = vant?.descricao ?? (vant ? vant.nome : `${remet?.nome ?? ''} -> ${dest?.nome ?? ''}`) ?? '';
+        const quantia = Number(e.valor ?? 0);
+        const date = e.dataHora ? new Date(e.dataHora) : new Date();
+        return { resumo, detalhes, quantia, date } as const;
+    }
     return (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fadeIn">
             <div className="bg-gray-800 text-white rounded-xl p-6 w-[28rem] shadow-xl relative">
-                <h2 className="text-xl font-semibold mb-4">Item Extrato n.*</h2>
+                <h2 className="text-xl font-semibold mb-4">Detalhes de Extrato</h2>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm text-gray-300 mb-1">Resumo:</label>
-                        <p className="w-full rounded-lg text-gray-200 bg-gray-00 border border-gray-600 px-3 py-2 text-left">
-                            {item?.resumo}</p>
+                            <label className="block text-sm text-gray-300 mb-1">Resumo:</label>
+                        <p className="w-full rounded-lg text-gray-200 bg-gray-00 border border-gray-600 px-3 py-2 text-center">
+                            {item ? formatExtratoDisplayLocal(item).resumo : ''}</p>
                     </div>
                     <div>
                         <label className="block text-sm text-gray-300 mb-1">Detalhes</label>
-                        <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left  min-h-30">
-                            {item?.detalhes}</p>
+                            <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left  min-h-30">
+                            {item ? formatExtratoDisplayLocal(item).detalhes : ''}</p>
                     </div>
                     <div>
                         <label className="block text-sm text-gray-300 mb-1">Quantia</label>
-                        <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
-                            {item?.quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
+                            {item ? formatExtratoDisplayLocal(item).quantia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : ''}</p>
                     </div>
                     <div>
                         <label className="block text-sm text-gray-300 mb-1">Data Efetuada</label>
-                        <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
-                            {item?.data?.toLocaleDateString("pt-BR")}</p>
+                            <p className="w-full rounded-lg text-gray-200 bg-gray-800 border border-gray-600 px-3 py-2 text-left">
+                            {item ? formatExtratoDisplayLocal(item).date.toLocaleDateString("pt-BR") : ''}</p>
                     </div>
                 </div>
 

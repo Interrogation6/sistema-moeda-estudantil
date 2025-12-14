@@ -17,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/admin/*" element={<App />} />
         <Route path="/extrato" element={<Extrato />} />
         <Route path="/gerenciar-vantagens" element={<GerenciarVantagens />} />
+        <Route path="/vantagem/:id" element={<GerenciarVantagens />} /> {/* nova rota */}
       </Routes>
     </BrowserRouter>
   </StrictMode>

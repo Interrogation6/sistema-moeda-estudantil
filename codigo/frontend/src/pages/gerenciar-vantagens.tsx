@@ -4,19 +4,25 @@ import Header from '../components/header.tsx'
 import { RootProvider } from '../providers/RootProvider'
 import { useLogin } from '../hooks/useLogin'
 import LoginModal from '../components/login/loginModal.tsx'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { TabelaVantagensAluno, TabelaVantagensEmpresa } from '../components/vantagemTabela.tsx'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Building2, Users } from 'lucide-react'
 
 function AppContent() {
     const { loginModalOpen, isLoggedIn, hydrated, tipo } = useLogin();
     const [view, setView] = useState(true);
+    const { id } = useParams<{ id?: string }>();
 
     const btnBase =
     "table-button inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors outline-none";
     const active = "!bg-blue-600/10 !text-white";
     const idle = "bg-transparent text-gray-300 hover:bg-white/10";
+    
+
+    useEffect(() => {
+        if (id) setView(false);
+    }, [id]);
 
     // Aguarda o provider hidratar (ler localStorage) antes de decidir redirecionar
     if (!hydrated) {
@@ -57,7 +63,7 @@ function AppContent() {
                 }
                 <div className="space-y-4 p-5 bg-gray-800/90 border rounded-2xl border-slate-600">
                     {tipo === "Aluno" &&
-                        <TabelaVantagensAluno view={view}/>
+                        <TabelaVantagensAluno view={view} openId={id ? Number(id) : undefined} />
                     }
                     {tipo === "Empresa" &&
                         <TabelaVantagensEmpresa />}

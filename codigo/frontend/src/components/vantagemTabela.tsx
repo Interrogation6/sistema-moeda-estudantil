@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Info, Plus, X, ArrowDown, ArrowUp } from "lucide-react";
-import QRCode from "qrcode";
 
 import '../styles/table.css';
 import ModalVantagem, { type VantagemItem } from "./vantagemModal";
@@ -8,6 +7,7 @@ import { useLogin } from "../hooks/useLogin";
 
 type TabelaVantagensAlunoProps = {
     view?: boolean;
+    openId?: number | undefined;
 };
 
 type EmailParams = {
@@ -24,22 +24,20 @@ type EmailParams = {
 async function notifVantagem(emailParams: EmailParams) {
     const claimUrl = `https://177.182.7.111:3000/vantagem/${emailParams.codigo}`;
 
-    const qrCodeDataUrl = await QRCode.toDataURL(claimUrl, {
-    width: 256,
-    margin: 1,
-  });
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?` +
+    `size=256x256&data=${encodeURIComponent(claimUrl)}`;
 
     const r = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      service_id: "service_k7s7am8",
-      template_id: "template_hbjjocm",
-      user_id: "HNOUx4jWE46zEj0J7", // Public Key
+      service_id: "service_6xi2v1b",
+      template_id: "template_wkj18za",
+      user_id: "apLVTJC8enCuoWJkb",
       template_params: {
         ...emailParams,
-        qr_code: qrCodeDataUrl, // <-- new param
-        claim_url: claimUrl,    // optional: also send the URL in text
+        qr_code: qrCodeUrl,
+        claim_url: claimUrl,
       },
     }),
   });
@@ -52,7 +50,7 @@ async function notifVantagem(emailParams: EmailParams) {
     }
 };
 
-export function TabelaVantagensAluno({ view }: Readonly<TabelaVantagensAlunoProps>) {
+export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensAlunoProps>) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -80,10 +78,10 @@ export function TabelaVantagensAluno({ view }: Readonly<TabelaVantagensAlunoProp
             }
         }
         fetchIds();
-    })
+    }, [view, user])
 
     const [infoOpen, setInfoOpen] = useState(false);
-    const [vantagemSelecionada, setVantagemSelecionada] = useState<VantagemItem | null>(null);
+    const [vantagemSelecionada, setVantagemSelecionada] = useState<VantagemItem | null>(null)
 
     function handleInfo(vantagem: VantagemItem) {
         setVantagemSelecionada(vantagem);
@@ -136,6 +134,16 @@ export function TabelaVantagensAluno({ view }: Readonly<TabelaVantagensAlunoProp
             valor: vantagem.valor
         });
     }
+
+    useEffect(() => {
+        if (openId != null && vantagens.length > 0) {
+            const found = vantagens.find(v => v.id === openId);
+            if (found) {
+                setVantagemSelecionada(found);
+                setInfoOpen(true);
+            }
+        }
+    }, [openId, vantagens]);
 
     
 

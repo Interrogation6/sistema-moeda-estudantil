@@ -1,8 +1,10 @@
 package moeda_estudantil.models;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Curso {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

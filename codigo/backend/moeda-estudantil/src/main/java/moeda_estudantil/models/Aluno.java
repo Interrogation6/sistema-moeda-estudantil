@@ -3,8 +3,10 @@ package moeda_estudantil.models;
 import java.util.List;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Aluno {
     //SELECT id, nome, email, senha_hash, cpf, rg, cep, instituicao_id, curso_id, saldo, vantagem_id
     @Id
