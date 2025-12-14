@@ -10,7 +10,6 @@ import moeda_estudantil.services.VantagemService;
 import moeda_estudantil.views.VantagemDTO;
 import moeda_estudantil.views.VantagemView;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/vantagem")
 public class VantagemController {
