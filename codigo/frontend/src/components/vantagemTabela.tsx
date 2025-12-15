@@ -30,7 +30,9 @@ async function notifVantagem(emailParams: EmailParams) {
 
     const r = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true"
+     },
     body: JSON.stringify({
       service_id: "service_6xi2v1b",
       template_id: "template_wkj18za",
@@ -63,9 +65,17 @@ export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensA
             try {
                 let res;
                 if(view === true && user != null)
-                    res = await fetch(baseUrl + "/aluno/" + user.id + "/vantagens");
+                    res = await fetch(baseUrl + "/aluno/" + user.id + "/vantagens",{
+                        headers: {
+                            "ngrok-skip-browser-warning": "true"
+                        }
+                    });
                 else
-                    res = await fetch(baseUrl + "/vantagem/getAtivos");
+                    res = await fetch(baseUrl + "/vantagem/getAtivos",{
+                        headers: {
+                            "ngrok-skip-browser-warning": "true"
+                        }
+                    });
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setVantagens(data);
@@ -101,6 +111,9 @@ export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensA
         return;
         try {
             const res = await fetch(baseUrl + `/aluno/${user.id}/vantagens/${vantagem.id}`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                },
                 method: "POST",
             });
             if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -289,7 +302,11 @@ export function TabelaVantagensEmpresa() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch(baseUrl + "/vantagem/getAll/" + (user ? user.id : 0));
+                const res = await fetch(baseUrl + "/vantagem/getAll/" + (user ? user.id : 0),{
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setVantagens(data);
@@ -340,6 +357,9 @@ export function TabelaVantagensEmpresa() {
         if (!ok) return;
         try {
             const res = await fetch(baseUrl + `/vantagem/${id}`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                },
                 method: "PATCH",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -13,7 +13,11 @@ export function ListaAluno() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch(baseUrl + "/getListaAlunos");
+                const res = await fetch(baseUrl + "/getListaAlunos", {
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data: number[] = await res.json();
                 setIds(data);
@@ -63,7 +67,11 @@ export function TabelaAlunos() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch(baseUrl + "/aluno/getAll");
+                const res = await fetch(baseUrl + "/aluno/getAll?ngrok-skip-browser-warning=true", { 
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setAlunos(data);
@@ -111,6 +119,9 @@ export function TabelaAlunos() {
         try {
             setDeletingId(id);
             const res = await fetch(baseUrl + `/aluno/${id}`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                },
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

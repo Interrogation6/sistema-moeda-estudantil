@@ -214,13 +214,17 @@ async function Salvar(
         if(isCreate){
             res = await fetch(baseUrl + `/aluno`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+             },
             body: JSON.stringify(payload),
         });
         } else {
             res = await fetch(baseUrl + `/aluno/${aluno.id}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+             },
             body: JSON.stringify(payload),
         });
         }

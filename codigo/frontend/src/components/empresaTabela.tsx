@@ -18,7 +18,11 @@ export function TabelaEmpresas() {
     useEffect(() => {
         async function fetchIds() {
             try {
-                const res = await fetch(baseUrl + "/empresa/getAll");
+                const res = await fetch(baseUrl + "/empresa/getAll",{
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
                 setEmpresas(data);
@@ -62,6 +66,9 @@ export function TabelaEmpresas() {
         try {
             setDeletingId(id);
             const res = await fetch(baseUrl + `/empresa/${id}`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                },
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

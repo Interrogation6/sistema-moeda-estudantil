@@ -45,7 +45,11 @@ export default function ModalEnvioMoeda({ onClose }: { onClose: () => void }) {
         let mounted = true;
         async function fetchAlunos() {
             try {
-                const res = await fetch(baseUrl + '/aluno/getAll');
+                const res = await fetch(baseUrl + '/aluno/getAll', {
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) return;
                 const data = await res.json();
                 if (!mounted) return;
@@ -109,6 +113,9 @@ export default function ModalEnvioMoeda({ onClose }: { onClose: () => void }) {
                                     const destinatarioId = Number(form.destino);
                                     const valorCentavos = Number(form.quantia);
                                     const res = await fetch(baseUrl + `/aluno/${remetenteId}/enviar/${valorCentavos}/${destinatarioId}`, {
+                                        headers: {
+                                            "ngrok-skip-browser-warning": "true"
+                                        },
                                         method: 'POST'
                                     });
                                     if (res.status === 204) {

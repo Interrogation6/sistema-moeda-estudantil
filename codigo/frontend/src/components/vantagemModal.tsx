@@ -144,7 +144,9 @@ async function Salvar(
     try {
         const res = await fetch(baseUrl + `/vantagem`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+             },
             body: JSON.stringify(payload),
         });
 

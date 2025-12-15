@@ -83,7 +83,11 @@ export function TabelaExtrato() {
             }
             setLoading(true);
             try {
-                const res = await fetch(baseUrl + `/aluno/${user.id}/extratos`);
+                const res = await fetch(baseUrl + `/aluno/${user.id}/extratos`, {
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 if (!mounted) return;
