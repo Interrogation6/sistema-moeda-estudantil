@@ -32,7 +32,13 @@ export default function ModalEditarAluno({ aluno, isCreate = false, onClose, onS
 
     useEffect(() => {
         async function fetchLookups() {
-            const resCursos = await fetch(baseUrl + "/curso/getAll")
+            const resCursos = await fetch(baseUrl + "/curso/getAll",
+                {
+                    headers: {
+                        "ngrok-skip-browser-warning": "true"
+                    }
+                }
+            )
 
             const data: CursoItem[] = await resCursos.json();
             setCursos(data);

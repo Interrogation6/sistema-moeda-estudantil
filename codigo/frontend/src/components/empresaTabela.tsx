@@ -36,7 +36,7 @@ export function TabelaEmpresas() {
             }
         }
         fetchIds();
-    })
+    },[]);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [empresaSelecionada, setEmpresaSelecionada] = useState<EmpresaItem | null>(null);

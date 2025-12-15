@@ -85,7 +85,7 @@ export function TabelaAlunos() {
             }
         }
         fetchIds();
-    })
+    },[]);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoItem | null>(null);
