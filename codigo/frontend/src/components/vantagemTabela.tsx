@@ -129,7 +129,7 @@ export function TabelaVantagensAluno({ view, openId }: Readonly<TabelaVantagensA
         console.log("vai!");
         notifVantagem({
             nome: user.nome,
-            email: "kelvyndantas@hotmail.com",
+            email: user.email,
             codigo: vantagem.id.toString(),
             vantagem_nome: vantagem.nome,
             vantagem_empresa: vantagem.empresa,
